@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-[Route("api/users/{userId}/homes")]
+[Route("api/User/{userId}/homes")]
 [ApiController]
 public class HomeController : ControllerBase
 {

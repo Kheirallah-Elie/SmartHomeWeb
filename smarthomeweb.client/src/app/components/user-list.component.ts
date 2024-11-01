@@ -39,7 +39,7 @@ export class UserListComponent implements OnInit {
 
     this.userService.toggleDeviceState(userId, homeId, roomId, deviceId).subscribe(
       () => {
-        console.log('Device state toggled successfully');
+        console.log(homeId);
         this.loadUsers(); // Recharge les utilisateurs pour mettre à jour l'état
       },
       (error) => {
