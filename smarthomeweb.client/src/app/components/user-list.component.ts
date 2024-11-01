@@ -21,3 +21,5 @@ export class UserListComponent implements OnInit {
     });
   }
 }
+
+// Le but serait de pouvoir afficher cette page pour commencer, il faut resoudre un souci de routage
