@@ -1,34 +1,51 @@
-﻿using Microsoft.Extensions.Options;
-using MongoDB.Driver;
-using SmartHomeWeb.Server.Model;
-using System.Collections.Generic;
+﻿using MongoDB.Driver;
+using MongoDB.Bson;
 using System.Threading.Tasks;
-namespace SmartHomeWeb.Server.Services
+using System.Collections.Generic;
+
+public class UserService
 {
-    public class SmartHomeService
+    private readonly MongoDBContext _context;
+
+    public UserService(MongoDBContext context)
     {
-        private readonly IMongoCollection<SmartHomeModel> _collection;
+        _context = context;
+    }
 
-        public SmartHomeService(IOptions<MongoDBSettings> mongoDBSettings)
+    public async Task<List<User>> GetUsersAsync() =>
+        await _context.Users.Find(_ => true).ToListAsync();
+
+    public async Task<User> GetUserByIdAsync(string userId) =>
+        await _context.Users.Find(user => user.UserId == userId).FirstOrDefaultAsync();
+
+    public async Task CreateUserAsync(User user) =>
+        await _context.Users.InsertOneAsync(user);
+
+    public async Task UpdateUserAsync(string userId, User updatedUser) =>
+        await _context.Users.ReplaceOneAsync(u => u.UserId == userId, updatedUser);
+
+    public async Task AddHomeAsync(string userId, Home home)
+    {
+        var user = await GetUserByIdAsync(userId);
+        user.Homes.Add(home);
+        await UpdateUserAsync(userId, user);
+    }
+
+    public async Task<User> DeleteUserAsync(string id) =>
+        await _context.Users.FindOneAndDeleteAsync(user => user.UserId == id);
+
+    public async Task ToggleDeviceStateAsync(string userId, string homeId, string roomId, string deviceId)
+    {
+        var user = await GetUserByIdAsync(userId);
+        var home = user.Homes.Find(h => h.HomeId == homeId);
+        var room = home?.Rooms.Find(r => r.RoomId == roomId);
+        var device = room?.Devices.Find(d => d.DeviceId == deviceId);
+        
+        if (device != null)
         {
-            var client = new MongoClient(mongoDBSettings.Value.ConnectionString);
-            var database = client.GetDatabase(mongoDBSettings.Value.DatabaseName);
-            _collection = database.GetCollection<SmartHomeModel>("SmartHomeCollection");
+            device.State = !device.State;
+            await UpdateUserAsync(userId, user);
         }
-
-        public async Task<List<SmartHomeModel>> GetAllAsync() =>
-            await _collection.Find(_ => true).ToListAsync();
-
-        public async Task<SmartHomeModel> GetByIdAsync(string id) =>
-            await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
-
-        public async Task CreateAsync(SmartHomeModel data) =>
-            await _collection.InsertOneAsync(data);
-
-        public async Task UpdateAsync(string id, SmartHomeModel data) =>
-            await _collection.ReplaceOneAsync(x => x.Id == id, data);
-
-        public async Task DeleteAsync(string id) =>
-            await _collection.DeleteOneAsync(x => x.Id == id);
     }
 }
+

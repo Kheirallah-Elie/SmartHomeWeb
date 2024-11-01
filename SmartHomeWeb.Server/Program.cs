@@ -1,5 +1,4 @@
-using SmartHomeWeb.Server.Model;
-using SmartHomeWeb.Server.Services;
+using SmartHomeWeb.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +9,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.Configure<MongoDBSettings>(
-    builder.Configuration.GetSection("MongoDBSettings"));
+//builder.Services.Configure<MongoDBContext>(
+//    builder.Configuration.GetSection("MongoDBSettings"));
 
-builder.Services.AddSingleton<SmartHomeService>();
+
+builder.Services.AddSingleton<MongoDBContext>();
+builder.Services.AddSingleton<UserService>();
 
 var app = builder.Build();
 

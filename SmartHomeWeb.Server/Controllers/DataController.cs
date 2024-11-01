@@ -1,61 +1,57 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SmartHomeWeb.Server.Model;
-using SmartHomeWeb.Server.Services;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-namespace SmartHomeWeb.Server.Controllers
+using MongoDB.Bson;
+
+[Route("api/[controller]")]
+[ApiController]
+public class UserController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class DataController : ControllerBase
+    private readonly UserService _userService;
+
+    public UserController(UserService userService)
     {
-        private readonly SmartHomeService _service;
+        _userService = userService;
+    }
 
-        public DataController(SmartHomeService service)
-        {
-            _service = service;
-        }
+    [HttpGet]
+    public async Task<IActionResult> GetUsers()
+    {
+        var users = await _userService.GetUsersAsync();
+        return Ok(users);
+    }
 
-        [HttpGet("getAll")]
-        public async Task<ActionResult<List<SmartHomeModel>>> GetAll()
-        {
-            var data = await _service.GetAllAsync();
-            return Ok(data);
-        }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetUser(string id)
+    {
+        var user = await _userService.GetUserByIdAsync(id);
+        return user == null ? NotFound() : Ok(user);
+    }
 
-        [HttpGet("{id:length(24)}")]
-        public async Task<ActionResult<SmartHomeModel>> GetById(string id)
-        {
-            var data = await _service.GetByIdAsync(id);
-            return data == null ? NotFound() : Ok(data);
-        }
+    [HttpPost]
+    public async Task<IActionResult> CreateUser(User user)
+    {
+        await _userService.CreateUserAsync(user);
+        return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, user);
+    }
 
-        [HttpPost]
-        public async Task<ActionResult> Create(SmartHomeModel data)
-        {
-            await _service.CreateAsync(data);
-            return CreatedAtAction(nameof(GetById), new { id = data.Id }, data);
-        }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteUser(string id)
+    {
+        var user = await _userService.DeleteUserAsync(id);
+        return user == null ? NotFound() : NoContent();
+    }
 
-        [HttpPut("{id:length(24)}")]
-        public async Task<IActionResult> Update(string id, SmartHomeModel data)
-        {
-            var existingData = await _service.GetByIdAsync(id);
-            if (existingData == null) return NotFound();
+    [HttpPost("{userId}/homes")]
+    public async Task<IActionResult> AddHome(string userId, Home home)
+    {
+        await _userService.AddHomeAsync(userId, home);
+        return NoContent();
+    }
 
-            data.Id = existingData.Id;
-            await _service.UpdateAsync(id, data);
-            return NoContent();
-        }
-
-        [HttpDelete("{id:length(24)}")]
-        public async Task<IActionResult> Delete(string id)
-        {
-            var data = await _service.GetByIdAsync(id);
-            if (data == null) return NotFound();
-
-            await _service.DeleteAsync(id);
-            return NoContent();
-        }
+    [HttpPut("{userId}/homes/{homeId}/rooms/{roomId}/devices/{deviceId}/toggle")]
+    public async Task<IActionResult> ToggleDeviceState(string userId, string homeId, string roomId, string deviceId)
+    {
+        await _userService.ToggleDeviceStateAsync(userId, homeId, roomId, deviceId);
+        return NoContent();
     }
 }
