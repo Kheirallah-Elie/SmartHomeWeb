@@ -79,6 +79,7 @@ public class UserService
 
     public async Task ToggleDeviceStateAsync(string userId, string homeId, string roomId, string deviceId)
     {
+
         var user = await GetUserByIdAsync(userId);
         var device = user.Homes.Find(h => h.HomeId == homeId)
                               ?.Rooms.Find(r => r.RoomId == roomId)

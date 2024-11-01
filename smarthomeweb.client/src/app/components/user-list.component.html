@@ -2,21 +2,26 @@
 
 <router-outlet></router-outlet>
 
-<h1>Users</h1>
-<div *ngFor="let user of users">
-  <h2>{{ user.name }}</h2>
-  <div *ngFor="let home of user.homes">
-    <h3>{{ home.nickname }}</h3>
-    <div *ngFor="let room of home.rooms">
-      <h4>{{ room.name }}</h4>
-      <ul>
-        <li *ngFor="let device of room.devices">
-          {{ device.description }} - {{ device.state ? 'On' : 'Off' }}
-          <button (click)="toggleDeviceState(user._id, home.homeId, room.roomId, device.deviceId)">
-            Toggle
-          </button>
-        </li>
-      </ul>
+<h1 style="text-align: center;">Users</h1>
+<div class="user-container">
+  <div *ngFor="let user of users" class="user-card">
+    <h2 class="user-name">{{ user.name }}</h2>
+    <div *ngFor="let home of user.homes" class="home-card">
+      <h3 class="home-nickname">{{ home.nickname }}</h3>
+      <div *ngFor="let room of home.rooms" class="room-card">
+        <h4 class="room-name">{{ room.name }}</h4>
+        <ul class="device-list">
+          <li *ngFor="let device of room.devices" class="device-item">
+            <span class="device-description">{{ device.description }}</span> -
+            <span class="device-state" [ngClass]="{'on': device.state, 'off': !device.state}">
+              {{ device.state ? 'On' : 'Off' }}
+            </span>
+            <button (click)="toggleDeviceState(user.userId, home.homeId, room.roomId, device.deviceId)">
+                Toggle Device
+            </button>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
@@ -24,4 +29,5 @@
 
 
 
-<!-- Le but serait de pouvoir afficher cette page pour commencer, il faut resoudre un souci de routage '-->
+
+<!-- Le but serait de pouvoir afficher cette page pour commencer, il faut resoudre un souci de routage '--> <!-- le problem est en realite dans l'import sur le fichier app.modules.ts qui n'a pas etait fait...'-->

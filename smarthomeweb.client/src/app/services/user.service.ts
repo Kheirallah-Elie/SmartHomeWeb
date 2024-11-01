@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:5000/api/user';
+  private apiUrl = 'https://localhost:7156/api/User';
 
   constructor(private http: HttpClient) { }
 
@@ -27,6 +27,6 @@ export class UserService {
   }
 
   toggleDeviceState(userId: string, homeId: string, roomId: string, deviceId: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${userId}/homes/${homeId}/rooms/${roomId}/devices/${deviceId}/toggle`, {});
+    return this.http.put<void>(`${this.apiUrl}/${userId}/homes/${homeId}/rooms/${roomId}/devices/${deviceId}/toggle`, {});
   }
 }

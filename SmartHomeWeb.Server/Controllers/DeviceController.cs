@@ -19,17 +19,19 @@ public class DeviceController : ControllerBase
         return Ok(device);
     }
 
+    // Ajout des paramètres userId, homeId et roomId à la route
     [HttpPut("{deviceId}/toggle")]
     public async Task<IActionResult> ToggleDeviceState(string userId, string homeId, string roomId, string deviceId)
     {
+        // Logique pour changer l'état de l'appareil
         await _userService.ToggleDeviceStateAsync(userId, homeId, roomId, deviceId);
-        return NoContent();
+        return NoContent(); // Indique que l'opération a été effectuée avec succès
     }
 
     [HttpDelete("{deviceId}")]
     public async Task<IActionResult> DeleteDevice(string userId, string homeId, string roomId, string deviceId)
     {
         await _userService.DeleteDeviceAsync(userId, homeId, roomId, deviceId);
-        return NoContent();
+        return NoContent(); // Indique que l'appareil a été supprimé avec succès
     }
 }
