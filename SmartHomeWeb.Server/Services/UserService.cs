@@ -1,6 +1,7 @@
 ﻿using MongoDB.Driver;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using BCrypt.Net; // Import the BCrypt.Net library for password hashing
 
 public class UserService
 {
@@ -17,11 +18,46 @@ public class UserService
     public async Task<User> GetUserByIdAsync(string userId) =>
         await _context.Users.Find(user => user.UserId == userId).FirstOrDefaultAsync();
 
-    public async Task CreateUserAsync(User user) =>
-        await _context.Users.InsertOneAsync(user);
+    public async Task<string> CreateUserAsync(User user)
+    {
+        try
+        {
+            // Check if the email already exists
+            var existingUser = await _context.Users.Find(u => u.Email == user.Email).FirstOrDefaultAsync();
+            if (existingUser != null)
+            {
+                return "Email already in use. Please choose another one.";
+            }
 
-    public async Task<User> AuthenticateAsync(string email, string password) =>
-        await _context.Users.Find(u => u.Email == email && u.Password == password).FirstOrDefaultAsync();
+            // Hash the password before saving it to the database
+            Console.WriteLine($"Registered User: {user.Email}, Password Hash: {user.Password}");
+            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+
+            // Insert the user into the MongoDB collection
+            await _context.Users.InsertOneAsync(user);
+            return "User registered successfully.";
+        }
+        catch (Exception ex)
+        {
+            // Log the error for debugging
+            Console.WriteLine($"Error occurred while creating user: {ex.Message}");
+            throw; // Optionally rethrow the exception or handle it
+        }
+    }
+
+    public async Task<User> AuthenticateAsync(string email, string password)
+    {
+        // Find the user in the Db. If the user exists and the provided password matches the hashed password
+        User user = await _context.Users.Find(u => u.Email == email).FirstOrDefaultAsync();
+        /*if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
+        {
+            return user; //if authentication is successful
+        }
+        Console.WriteLine(user + "not found!");
+        return null; //if authentication fails*/
+        Console.WriteLine(user + "found");
+        return user;
+    }
 
     public async Task<bool> UpdateUserAsync(string userId, User updatedUser)
     {
@@ -79,7 +115,6 @@ public class UserService
 
     public async Task ToggleDeviceStateAsync(string userId, string homeId, string roomId, string deviceId)
     {
-
         var user = await GetUserByIdAsync(userId);
         var device = user.Homes.Find(h => h.HomeId == homeId)
                               ?.Rooms.Find(r => r.RoomId == roomId)

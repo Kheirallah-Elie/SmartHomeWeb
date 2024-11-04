@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using SmartHomeWeb.Server;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configure CORS ---->>>>> (en gros cest pour permettre à notre site web d'acceder  l'api)
+// Configure CORS ---->>>>> (en gros cest pour permettre à notre site web d'acceder l'api)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -22,6 +25,17 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSingleton<MongoDBContext>();
 builder.Services.AddSingleton<UserService>();
+
+#region CHANGES 
+// Add Session support
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout (30 minutes)
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+#endregion
 
 var app = builder.Build();
 
@@ -40,6 +54,9 @@ app.UseHttpsRedirection();
 // Enable CORS
 app.UseCors("AllowAll"); // Ajoutez cette ligne pour activer CORS
 
+#region CHANGES
+app.UseSession();// Enable sessions
+#endregion
 app.UseAuthorization();
 
 app.MapControllers();

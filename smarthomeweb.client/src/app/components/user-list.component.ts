@@ -9,6 +9,7 @@ import { UserService } from '../services/user.service';
 })
 export class UserListComponent implements OnInit {
   users: any[] = []; // Liste des utilisateurs
+  selectedUser: any = null; // To store the selected user for the modal
 
   constructor(private userService: UserService) { }
 
@@ -27,6 +28,14 @@ export class UserListComponent implements OnInit {
         console.error('Error fetching users:', error); // Gestion des erreurs
       }
     );
+  }
+
+  openModal(user: any): void {
+    this.selectedUser = user; // Set the selected user
+  }
+
+  closeModal(): void {
+    this.selectedUser = null; // Reset selected user
   }
 
   // Méthode pour basculer l'état d'un appareil

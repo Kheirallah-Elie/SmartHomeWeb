@@ -1,11 +1,12 @@
 <!-- app.component.html -->
 
-<router-outlet></router-outlet>
+<!--<router-outlet></router-outlet>-->
 
-<h1 style="text-align: center;">Users</h1>
+<!--<h1 style="text-align: center;">Users</h1>-->
 <div class="user-container">
   <div *ngFor="let user of users" class="user-card">
-    <h2 class="user-name">{{ user.name }}</h2>
+    <h2 class="user-name" (click)="openModal(user)">{{ user.name }}</h2>
+    <p>Email: {{ user.email }}</p>
     <div *ngFor="let home of user.homes" class="home-card">
       <h3 class="home-nickname">{{ home.nickname }}</h3>
       <div *ngFor="let room of home.rooms" class="room-card">
@@ -17,7 +18,7 @@
               {{ device.state ? 'On' : 'Off' }}
             </span>
             <button (click)="toggleDeviceState(user.userId, home.homeId, room.roomId, device.deviceId)">
-                Toggle Device
+              Toggle Device
             </button>
           </li>
         </ul>
@@ -26,6 +27,17 @@
   </div>
 </div>
 
+<!-- Modal -->
+<div class="modal" *ngIf="selectedUser">
+  <div class="modal-content">
+    <span class="close" (click)="closeModal()">&times;</span>
+    <h2>User Information</h2>
+    <p><strong>Name:</strong> {{ selectedUser.name }}</p>
+    <p><strong>Email:</strong> {{ selectedUser.email }}</p>
+    <p><strong>Homes:</strong> {{ selectedUser.homes.length }}</p>
+    <!-- Add more fields as necessary -->
+  </div>
+</div>
 
 
 

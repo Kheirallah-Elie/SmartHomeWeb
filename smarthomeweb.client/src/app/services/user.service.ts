@@ -18,8 +18,8 @@ export class UserService {
     return this.http.get(`${this.apiUrl}/${userId}`);
   }
 
-  createUser(user: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, user);
+  createUser(user: User): Observable<User> {
+    return this.http.post<User>(`${this.apiUrl}/register`, user);
   }
 
   addHome(userId: string, home: any): Observable<any> {
@@ -29,4 +29,24 @@ export class UserService {
   toggleDeviceState(userId: string, homeId: string, roomId: string, deviceId: string): Observable<any> {
     return this.http.put<void>(`${this.apiUrl}/${userId}/homes/${homeId}/rooms/${roomId}/devices/${deviceId}/toggle`, {});
   }
+
+  login(email: string, password: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, { email, password });
+  }
+
+  logout(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/logout`, {});
+  }
+
+  isAuthenticated(): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/isAuthenticated`);
+  }
+}
+
+export interface User {
+  userId: string;
+  name: string;
+  email: string;
+  password: string;
+  //homes: Home[];
 }
