@@ -33,9 +33,9 @@ public class UserController : ControllerBase
     {
         user.UserId = ObjectId.GenerateNewId().ToString();
         user.Homes = new List<Home>(); // Initialize with an empty list
-        #region CHANGES - Encrypt the Password
-        user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password); 
-        #endregion
+        //#region CHANGES - Encrypt the Password
+        //user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password); // Not necessary for the moment
+        //#endregion
         await _userService.CreateUserAsync(user);
         return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, user);
     }

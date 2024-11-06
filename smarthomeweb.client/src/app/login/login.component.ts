@@ -19,7 +19,7 @@ export class LoginComponent {
       next: (response) => {
         // Store session data if needed
         localStorage.setItem('user', JSON.stringify(response)); // Example of storing user data
-        this.router.navigate(['/home']); // Redirect to home page after login
+        this.router.navigate(['/users']); // Redirect to users after login
       },
       error: (error) => {
         this.errorMessage = 'Invalid credentials, please try again.';
