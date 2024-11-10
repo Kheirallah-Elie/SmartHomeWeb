@@ -1,6 +1,7 @@
 // user-list.component.ts
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../services/user.service';
+import * as signalR from "@microsoft/signalr";
 
 @Component({
   selector: 'app-user-list',
@@ -9,12 +10,14 @@ import { UserService } from '../services/user.service';
 })
 export class UserListComponent implements OnInit {
   users: any[] = []; // Liste des utilisateurs
+  private hubConnection: signalR.HubConnection | null = null;
   selectedUser: any = null; // To store the selected user for the modal
 
   constructor(private userService: UserService) { }
 
   ngOnInit(): void {
     this.loadUsers(); // Charge les utilisateurs lors de l'initialisation
+    this.startSignalRConnection();
   }
 
   // Méthode pour charger les utilisateurs
@@ -56,8 +59,19 @@ export class UserListComponent implements OnInit {
       }
     );
   }
+
+  private startSignalRConnection(): void {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl('https://localhost:7156/deviceHub')
+      .build();
+
+    this.hubConnection.start().then(() => {
+      console.log('SignalR connection established');
+    }).catch(err => console.error('Error establishing SignalR connection:', err));
+
+    this.hubConnection.on('DeviceStateChanged', (update) => {
+      console.log('Device state changed:', update);
+      this.loadUsers(); // Reload data to reflect changes
+    });
+  }
 }
-
-
-
-// Le but serait de pouvoir afficher cette page pour commencer, il faut resoudre un souci de routage
