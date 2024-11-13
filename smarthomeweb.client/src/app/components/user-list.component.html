@@ -1,10 +1,5 @@
-<!--This page is currently showing every user in the registered Database,
-but will later only have to show the Homes of the connected users,
-non-connected users will have to login to see anything, or add any homes.-->
-
-<!--<h1 style="text-align: center;">Users</h1>-->
-<div class="user-container">
-  <div *ngFor="let user of users" class="user-card">
+<div *ngIf="user" class="user-container">
+  <div class="user-card">
     <h2 class="user-name" (click)="openModal(user)">{{ user.name }}</h2>
     <p>Email: {{ user.email }}</p>
     <div *ngFor="let home of user.homes" class="home-card">
@@ -17,7 +12,7 @@ non-connected users will have to login to see anything, or add any homes.-->
             <span class="device-state" [ngClass]="{'on': device.state, 'off': !device.state}">
               {{ device.state ? 'On' : 'Off' }}
             </span>
-            <button (click)="toggleDeviceState(user.userId, home.homeId, room.roomId, device.deviceId)">
+            <button (click)="toggleDeviceState(home.homeId, room.roomId, device.deviceId)">
               Toggle Device
             </button>
           </li>
@@ -26,7 +21,9 @@ non-connected users will have to login to see anything, or add any homes.-->
     </div>
   </div>
 </div>
-
+<div>
+  <button style="background-color:red" (click)="logout()">Logout</button>
+</div>
 <!-- Modal -->
 <div class="modal" *ngIf="selectedUser">
   <div class="modal-content">
@@ -35,6 +32,6 @@ non-connected users will have to login to see anything, or add any homes.-->
     <p><strong>Name:</strong> {{ selectedUser.name }}</p>
     <p><strong>Email:</strong> {{ selectedUser.email }}</p>
     <p><strong>Homes:</strong> {{ selectedUser.homes.length }}</p>
-    <!-- Add more fields as necessary -->
+    <!-- Ajoute d'autres champs si nécessaire -->
   </div>
 </div>
