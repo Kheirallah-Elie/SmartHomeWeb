@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -14,13 +16,13 @@ builder.Services.AddSwaggerGen();
 // Configure CORS ---->>>>> (en gros cest pour permettre à notre site web d'acceder l'api)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        builder =>
-        {
-            builder.AllowAnyOrigin() // Autorise toutes les origines
-                   .AllowAnyMethod() // Autorise toutes les méthodes (GET, POST, etc.)
-                   .AllowAnyHeader(); // Autorise tous les en-têtes
-        });
+    options.AddPolicy("AllowSpecificOrigins", builder =>
+    {
+        builder.WithOrigins("https://localhost:4200", "https://127.0.0.1:4200") // Both origins
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials(); // Required for SignalR with CORS
+    });
 });
 
 builder.Services.AddSingleton<MongoDBContext>();
@@ -51,16 +53,24 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Enable CORS
-app.UseCors("AllowAll"); // Ajoutez cette ligne pour activer CORS
+app.UseRouting(); // Ensure UseRouting is before UseCors, UseSession, and UseEndpoints
 
 #region CHANGES
 app.UseSession();// Enable sessions
 #endregion
+
+app.UseCors("AllowSpecificOrigins"); // Apply updated CORS policy
+
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.MapFallbackToFile("/index.html");
+
+// SignalR configuration
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapHub<DeviceHub>("/deviceHub"); // Map SignalR hub
+});
 
 app.Run();

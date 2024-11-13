@@ -45,8 +45,6 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
     {
-        //var user = await _userService.AuthenticateAsync(email, password);
-        //return user == null ? Unauthorized("Invalid credentials") : Ok(user);
         Console.WriteLine($"Login attempt for: {loginRequest.Email}");
 
         var user = await _userService.AuthenticateAsync(loginRequest.Email, loginRequest.Password);
@@ -54,11 +52,13 @@ public class UserController : ControllerBase
         {
             Console.WriteLine("Login failed: Invalid credentials");
             return Unauthorized(new { message = "Invalid credentials. Please check your email and password." });
-            //return Unauthorized("Invalid credentials");
         }
+
         // Store user ID in session upon successful login
         HttpContext.Session.SetString("UserId", user.UserId);
-        return Ok(new { message = "Login successful" });
+
+        // Renvoyer l'ID avec un message de succès
+        return Ok(new { message = "Login successful", userId = user.UserId });
     }
     #endregion
 

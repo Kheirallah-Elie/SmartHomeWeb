@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using BCrypt.Net; // Import the BCrypt.Net library for password hashing
@@ -6,10 +7,12 @@ using BCrypt.Net; // Import the BCrypt.Net library for password hashing
 public class UserService
 {
     private readonly MongoDBContext _context;
+    private readonly IHubContext<DeviceHub> _deviceHubContext;
 
-    public UserService(MongoDBContext context)
+    public UserService(MongoDBContext context, IHubContext<DeviceHub> deviceHubContext)
     {
         _context = context;
+        _deviceHubContext = deviceHubContext;
     }
 
     public async Task<List<User>> GetUsersAsync() =>
@@ -124,6 +127,18 @@ public class UserService
         {
             device.State = !device.State;
             await UpdateUserAsync(userId, user);
+
+            // Notify connected clients about the state change
+            // SignalR Code starts
+            await _deviceHubContext.Clients.All.SendAsync("DeviceStateChanged", new
+            {
+                UserId = userId,
+                HomeId = homeId,
+                RoomId = roomId,
+                DeviceId = deviceId,
+                NewState = device.State
+            });
+            // SignalR Code ends
         }
     }
 

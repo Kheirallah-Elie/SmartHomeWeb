@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -31,15 +31,27 @@ export class UserService {
   }
 
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, { email, password });
+    return this.http.post<any>(`${this.apiUrl}/login`, { email, password }).pipe(
+      tap(response => {
+        // Stocke l'ID utilisateur dans localStorage après une connexion réussie
+        localStorage.setItem('userId', response.userId);
+      })
+    );
   }
 
   logout(): Observable<any> {
+    // Supprime l'ID utilisateur de localStorage à la déconnexion
+    localStorage.removeItem('userId');
     return this.http.post(`${this.apiUrl}/logout`, {});
   }
 
   isAuthenticated(): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/isAuthenticated`);
+  }
+
+  // Méthode pour récupérer l'ID utilisateur stocké dans localStorage
+  getUserId(): string | null {
+    return localStorage.getItem('userId');
   }
 }
 
