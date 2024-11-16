@@ -8,12 +8,12 @@
         <h4 class="room-name">{{ room.name }}</h4>
         <ul class="device-list">
           <li *ngFor="let device of room.devices" class="device-item">
-            <span class="device-description">{{ device.description }}</span> -
-            <span class="device-state" [ngClass]="{'on': device.state, 'off': !device.state}">
+            <span class="device-description">Device: <strong class="bigger-description">{{ device.description }}</strong>
+            <br><br>ID: <strong>{{ device.deviceId }}</strong></span>
+            <!-- Button for toggling state -->
+            <button [ngClass]="{'on-button': device.state, 'off-button': !device.state}"
+                    (click)="toggleDeviceState(home.homeId, room.roomId, device.deviceId)">
               {{ device.state ? 'On' : 'Off' }}
-            </span>
-            <button (click)="toggleDeviceState(home.homeId, room.roomId, device.deviceId)">
-              Toggle Device
             </button>
           </li>
         </ul>
@@ -21,14 +21,18 @@
     </div>
   </div>
 </div>
+
+<!-- Add Data Button -->
 <div>
-  <!-- Bouton pour naviguer vers la page Add Data -->
   <button class="add-data-button" routerLink="/add">Add Data</button>
 </div>
+
+<!-- Logout Button -->
 <div>
   <button class="logout-button" (click)="logout()">Logout</button>
 </div>
-<!-- Modal -->
+
+<!-- Modal for User Info -->
 <div class="modal" *ngIf="selectedUser">
   <div class="modal-content">
     <span class="close" (click)="closeModal()">&times;</span>
@@ -36,6 +40,6 @@
     <p><strong>Name:</strong> {{ selectedUser.name }}</p>
     <p><strong>Email:</strong> {{ selectedUser.email }}</p>
     <p><strong>Homes:</strong> {{ selectedUser.homes.length }}</p>
-    <!-- Ajoute d'autres champs si nécessaire -->
+    <!-- Additional fields can be added here if necessary -->
   </div>
 </div>

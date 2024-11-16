@@ -22,11 +22,11 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-  /* Effet au survol des cartes */
-  .user-card:hover, .home-card:hover, .room-card:hover {
-    transform: translateY(-8px); /* Légère élévation */
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Ombre plus marquée */
-  }
+/* Effet au survol des cartes */
+.user-card:hover, .home-card:hover, .room-card:hover {
+  transform: translateY(-8px); /* Légère élévation */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Ombre plus marquée */
+}
 
 /* Titres */
 .user-name {
@@ -68,13 +68,13 @@
   transition: color 0.3s ease;
 }
 
-  .device-state.on {
-    color: #4caf50; /* Vert pour ON */
-  }
+.device-state.on {
+  color: #4caf50; /* Vert pour ON */
+}
 
-  .device-state.off {
-    color: #f44336; /* Rouge pour OFF */
-  }
+.device-state.off {
+  color: #f44336; /* Rouge pour OFF */
+}
 
 /* Boutons principaux */
 button {
@@ -92,10 +92,10 @@ button {
   color: white;
 }
 
-  .toggle-button:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-  }
+.toggle-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
 
 .add-data-button {
   background-color: #4caf50;
@@ -103,20 +103,20 @@ button {
   margin-bottom:20px;
 }
 
-  .add-data-button:hover {
-    background-color: #3e8e41;
-    transform: translateY(-2px);
-  }
+.add-data-button:hover {
+  background-color: #3e8e41;
+  transform: translateY(-2px);
+}
 
 .logout-button {
   background-color: #fa0404;
   color: white;
 }
 
-  .logout-button:hover {
-    background-color: #c00303;
-    transform: translateY(-2px);
-  }
+.logout-button:hover {
+  background-color: #c00303;
+  transform: translateY(-2px);
+}
 
 /* Titre des sections */
 h2 {
@@ -131,6 +131,39 @@ h3 {
   font-size: 1.4em;
   margin-bottom: 10px;
 }
+
+.on-button {
+  background-color: green;
+  color: white;
+  border: none;
+  padding: 8px 45px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.off-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 8px 45px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.on-button:hover,
+.off-button:hover {
+  opacity: 0.9;
+}
+
+.device-description strong {
+  font-weight: bold;
+}
+
+.bigger-description {
+  font-size: 1.5em; /* Adjust this value to make the text bigger */
+}
+
+
 
 /* Style responsive pour les écrans plus petits */
 @media (max-width: 768px) {
