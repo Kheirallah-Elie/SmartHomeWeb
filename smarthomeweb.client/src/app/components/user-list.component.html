@@ -22,7 +22,11 @@
   </div>
 </div>
 <div>
-  <button style="background-color:red" (click)="logout()">Logout</button>
+  <!-- Bouton pour naviguer vers la page Add Data -->
+  <button class="add-data-button" routerLink="/add">Add Data</button>
+</div>
+<div>
+  <button class="logout-button" (click)="logout()">Logout</button>
 </div>
 <!-- Modal -->
 <div class="modal" *ngIf="selectedUser">

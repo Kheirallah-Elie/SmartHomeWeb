@@ -1,1 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
+marquee {
+  font-size: 100px;
+  font-style: normal;
+  backface-visibility: hidden;
+  color: midnightblue;
+  background-color: aliceblue;
+}
+  marquee:hover {
+      backface-visibility:hidden;
+  }
+
+body{
+    background-color: aliceblue;
+}

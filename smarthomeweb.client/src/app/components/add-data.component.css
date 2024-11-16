@@ -1,0 +1,81 @@
+/* Conteneur principal */
+.add-data-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+/* Titres de section */
+.section-title {
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
+  border-bottom: 2px solid #007BFF;
+  padding-bottom: 5px;
+}
+
+/* Formulaires */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.form-label {
+  font-size: 1em;
+  color: #555;
+}
+
+.form-input, .form-checkbox {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+  .form-input:focus {
+    border-color: #007BFF;
+    outline: none;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+  }
+
+/* Boutons */
+.form-button {
+  padding: 10px 15px;
+  background-color: #007BFF;
+  color: #fff;
+  font-size: 1em;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+  .form-button:hover {
+    background-color: #0056b3;
+  }
+
+.users-button {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px 0;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+  .users-button:hover {
+    background-color: #1976d2;
+  }

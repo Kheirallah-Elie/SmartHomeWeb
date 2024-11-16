@@ -7,11 +7,12 @@ import { UserListComponent } from './components/user-list.component';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { AddDataComponent } from './components/add-data.component';
 
 @NgModule({
   declarations: [
     AppComponent, // Ajout de AppComponent dans les déclarations
-    UserListComponent, LoginComponent, RegisterComponent
+    UserListComponent, LoginComponent, RegisterComponent, AddDataComponent
   ],
   imports: [
     BrowserModule,

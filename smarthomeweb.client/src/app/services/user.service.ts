@@ -23,7 +23,18 @@ export class UserService {
   }
 
   addHome(userId: string, home: any): Observable<any> {
+    console.log("Home envoyé :", home);
     return this.http.post(`${this.apiUrl}/${userId}/homes`, home);
+  }
+
+  // Méthode pour ajouter une pièce
+  addRoom(userId: string, homeId: string, room: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${userId}/homes/${homeId}/rooms`, room);
+  }
+
+  // Méthode pour ajouter un appareil
+  addDevice(userId: string, homeId: string, roomId: string, device: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${userId}/homes/${homeId}/rooms/${roomId}/devices`, device);
   }
 
   toggleDeviceState(userId: string, homeId: string, roomId: string, deviceId: string): Observable<any> {
