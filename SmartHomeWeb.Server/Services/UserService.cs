@@ -79,8 +79,7 @@ public class UserService
     }
 
     public async Task<List<Home>> GetHomesByUserIdAsync(string userId) =>
-        (await GetUserByIdAsync(userId))?.Homes;
-
+    (await GetUserByIdAsync(userId))?.Homes ?? new List<Home>();
     public async Task DeleteHomeAsync(string userId, string homeId)
     {
         var user = await GetUserByIdAsync(userId);
@@ -97,7 +96,7 @@ public class UserService
     }
 
     public async Task<List<Room>> GetRoomsByHomeIdAsync(string userId, string homeId) =>
-        (await GetUserByIdAsync(userId))?.Homes.Find(h => h.HomeId == homeId)?.Rooms;
+        (await GetUserByIdAsync(userId))?.Homes.Find(h => h.HomeId == homeId)?.Rooms ?? new List<Room>();
 
     public async Task DeleteRoomAsync(string userId, string homeId, string roomId)
     {
@@ -115,6 +114,7 @@ public class UserService
         room.Devices.Add(device);
         await UpdateUserAsync(userId, user);
     }
+
 
     public async Task ToggleDeviceStateAsync(string userId, string homeId, string roomId, string deviceId)
     {

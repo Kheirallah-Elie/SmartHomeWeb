@@ -2,9 +2,33 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
+
+// Add at the top of your UserService file
+export interface Home {
+  homeId: string;
+  nickname: string;
+  address: string;
+  rooms: Room[];
+}
+
+export interface Room {
+  roomId: string;
+  name: string;
+  devices: Device[];
+}
+
+export interface Device {
+  deviceId: string;
+  description: string;
+  state: boolean;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class UserService {
   private apiUrl = 'https://localhost:7156/api/User';
 
@@ -63,6 +87,16 @@ export class UserService {
   // Méthode pour récupérer l'ID utilisateur stocké dans localStorage
   getUserId(): string | null {
     return localStorage.getItem('userId');
+  }
+
+  // Method to fetch homes for a specific user
+  getHomesByUserId(userId: string): Observable<Home[]> {
+    return this.http.get<Home[]>(`${this.apiUrl}/${userId}/homes`);
+  }
+
+  // Method to fetch rooms for a specific home of a user
+  getRoomsByHomeId(userId: string, homeId: string): Observable<Room[]> {
+    return this.http.get<Room[]>(`${this.apiUrl}/${userId}/homes/${homeId}/rooms`);
   }
 }
 
