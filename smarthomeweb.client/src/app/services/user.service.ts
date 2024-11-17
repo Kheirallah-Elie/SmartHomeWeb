@@ -67,8 +67,12 @@ export class UserService {
 
   login(email: string, password: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, { email, password }).pipe(
-      tap(response => {
-        // Stocke l'ID utilisateur dans localStorage après une connexion réussie
+      tap((response) => {
+        // Vérifiez que 'userId' est présent dans la réponse
+        if (!response.userId) {
+          throw new Error('Authentication failed');
+        }
+        // Stocke l'ID utilisateur en cas de succès
         localStorage.setItem('userId', response.userId);
       })
     );

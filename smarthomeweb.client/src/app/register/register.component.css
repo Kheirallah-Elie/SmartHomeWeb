@@ -9,7 +9,7 @@ body {
   margin: 0;
 }
 
-.register-container {
+.register-container, .login-container {
   background-color: #ffffff; /* White background for the form */
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
@@ -29,8 +29,7 @@ label {
   text-align: left; /* Align labels to the left */
 }
 
-input[type="email"],
-input[type="password"] {
+input[type="email"], input[type="password"] {
   width: 90%; /* Full width for inputs */
   padding: 8px; /* Space inside inputs */
   margin-bottom: 10px; /* Space below inputs */
@@ -54,23 +53,10 @@ button {
     background-color: #0056b3; /* Darker blue on hover */
   }
 
-p {
-  margin: 10px 0; /* Space above and below paragraphs */
-}
-
-a {
-  color: #007bff; /* Blue link color */
-  text-decoration: none; /* No underline */
-}
-
-  a:hover {
-    text-decoration: underline; /* Underline on hover */
-  }
-
-.error {
+.error-message {
   color: red; /* Red color for error messages */
 }
 
-.success {
+.success-message {
   color: green; /* Green color for success messages */
 }

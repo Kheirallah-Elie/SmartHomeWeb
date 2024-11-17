@@ -5,7 +5,7 @@ import { UserService } from '../services/user.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
   email: string = '';
@@ -17,12 +17,18 @@ export class LoginComponent {
   login() {
     this.userService.login(this.email, this.password).subscribe({
       next: (response) => {
-        // Store session data if needed
-        localStorage.setItem('user', JSON.stringify(response)); // Example of storing user data
-        this.router.navigate(['/users']); // Redirect to users after login
+        // Authentification réussie, redirection vers la page des utilisateurs
+        this.router.navigate(['/users']);
       },
       error: (error) => {
-        this.errorMessage = 'Invalid credentials, please try again.';
+        // Vérifie si l'erreur est liée à l'email ou au mot de passe
+        if (error.status === 401) {
+          // Si l'erreur est un échec d'authentification
+          this.errorMessage = 'Invalid email or password. Please try again.';
+        } else {
+          // Pour toute autre erreur
+          this.errorMessage = 'An unexpected error occurred. Please try again later.';
+        }
       }
     });
   }

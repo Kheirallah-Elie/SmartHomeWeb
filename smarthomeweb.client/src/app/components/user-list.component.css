@@ -22,11 +22,11 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Effet au survol des cartes */
-.user-card:hover, .home-card:hover, .room-card:hover {
-  transform: translateY(-8px); /* Légère élévation */
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Ombre plus marquée */
-}
+  /* Effet au survol des cartes */
+  .user-card:hover, .home-card:hover, .room-card:hover {
+    transform: translateY(-8px); /* Légère élévation */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Ombre plus marquée */
+  }
 
 /* Titres */
 .user-name {
@@ -57,118 +57,98 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
+.device-info {
+  display: flex;
+  flex-direction: column;
+}
+
 .device-description {
   flex: 1;
   color: #333;
   font-size: 1.1em;
 }
 
-.device-state {
-  font-weight: bold;
-  transition: color 0.3s ease;
+.device-id {
+  font-size: 0.9em;
+  color: #777;
 }
 
-.device-state.on {
-  color: #4caf50; /* Vert pour ON */
-}
-
-.device-state.off {
-  color: #f44336; /* Rouge pour OFF */
-}
-
-/* Boutons principaux */
-button {
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  font-size: 1em;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s ease;
-}
-
-/* Boutons spécifiques */
+/* Boutons d'activation des appareils */
 .toggle-button {
   background-color: #007bff;
   color: white;
+  border: none;
+  padding: 8px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s, transform 0.2s ease;
+}
+
+.on-button {
+  background-color: green;
+}
+
+.off-button {
+  background-color: red;
 }
 
 .toggle-button:hover {
-  background-color: #0056b3;
   transform: translateY(-2px);
+}
+
+/* Boutons généraux */
+.add-data-button, .logout-button {
+  padding: 10px 20px;
+  font-size: 1em;
+  margin-bottom: 10px;
 }
 
 .add-data-button {
   background-color: #4caf50;
   color: white;
-  margin-bottom:20px;
 }
 
-.add-data-button:hover {
-  background-color: #3e8e41;
-  transform: translateY(-2px);
-}
+  .add-data-button:hover {
+    background-color: #3e8e41;
+  }
 
 .logout-button {
   background-color: #fa0404;
   color: white;
 }
 
-.logout-button:hover {
-  background-color: #c00303;
-  transform: translateY(-2px);
-}
+  .logout-button:hover {
+    background-color: #c00303;
+  }
 
-/* Titre des sections */
-h2 {
+/* Style des sections */
+h2, h3, h4 {
   color: #333;
   font-size: 1.8em;
   margin-bottom: 15px;
   text-align: center;
 }
 
-h3 {
-  color: #555;
-  font-size: 1.4em;
-  margin-bottom: 10px;
+/* Titre de la modal */
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
 }
 
-.on-button {
-  background-color: green;
-  color: white;
-  border: none;
-  padding: 8px 45px;
+.close {
+  font-size: 2em;
   cursor: pointer;
-  border-radius: 4px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 
-.off-button {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 8px 45px;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.on-button:hover,
-.off-button:hover {
-  opacity: 0.9;
-}
-
-.device-description strong {
-  font-weight: bold;
-}
-
-.bigger-description {
-  font-size: 1.5em; /* Adjust this value to make the text bigger */
-}
-
-
-
-/* Style responsive pour les écrans plus petits */
+/* Responsive */
 @media (max-width: 768px) {
   .user-card, .home-card, .room-card {
-    width: 90%; /* Utilise 90% de la largeur disponible */
+    width: 90%;
     margin: 10px auto;
   }
 
@@ -180,8 +160,13 @@ h3 {
     font-size: 1.2em;
   }
 
-  button {
-    width: 100%; /* Boutons pleine largeur */
+  .toggle-button {
+    width: 100%;
+    padding: 12px 0;
+  }
+
+  .add-data-button, .logout-button {
+    width: 100%;
     padding: 12px 0;
   }
 }
