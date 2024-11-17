@@ -2,14 +2,20 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SmartHomeWeb.Server;
 using System.Text;
+using Microsoft.Azure.SignalR;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
-builder.Services.AddSignalR();
+// Retrieve the SignalR connection string
+var signalRConnectionString = builder.Configuration["AzureSignalR:ConnectionString"];
+builder.Services.AddSignalR().AddAzureSignalR(signalRConnectionString);
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Add other services
+builder.Services.AddControllers();
+builder.Services.AddHttpClient<UserService>(); // Register HttpClient for UserService
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -41,6 +47,7 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -70,7 +77,7 @@ app.MapFallbackToFile("/index.html");
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
-    endpoints.MapHub<DeviceHub>("/deviceHub"); // Map SignalR hub
+    endpoints.MapHub<DeviceHub>("/deviceHub");
 });
 
 app.Run();

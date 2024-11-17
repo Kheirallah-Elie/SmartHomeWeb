@@ -1,18 +1,21 @@
 ﻿using MongoDB.Driver;
 using Microsoft.AspNetCore.SignalR;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+using System.Text;
+using System.Text.Json;
 using BCrypt.Net; // Import the BCrypt.Net library for password hashing
 
 public class UserService
 {
     private readonly MongoDBContext _context;
     private readonly IHubContext<DeviceHub> _deviceHubContext;
+    private readonly HttpClient _httpClient; // Add an HttpClient instance
 
-    public UserService(MongoDBContext context, IHubContext<DeviceHub> deviceHubContext)
+    // Constructor injection of HttpClient
+    public UserService(MongoDBContext context, IHubContext<DeviceHub> deviceHubContext, HttpClient httpClient)
     {
         _context = context;
         _deviceHubContext = deviceHubContext;
+        _httpClient = httpClient;
     }
 
     public async Task<List<User>> GetUsersAsync() =>
@@ -116,6 +119,7 @@ public class UserService
     }
 
 
+
     public async Task ToggleDeviceStateAsync(string userId, string homeId, string roomId, string deviceId)
     {
         var user = await GetUserByIdAsync(userId);
@@ -129,7 +133,7 @@ public class UserService
             await UpdateUserAsync(userId, user);
 
             // Notify connected clients about the state change
-            // SignalR Code starts
+            // SignalR Code from Web App Server to Web App Client starts
             await _deviceHubContext.Clients.All.SendAsync("DeviceStateChanged", new
             {
                 UserId = userId,
@@ -138,7 +142,33 @@ public class UserService
                 DeviceId = deviceId,
                 NewState = device.State
             });
-            // SignalR Code ends
+            // SignalR Code from Web App Server to Web App Client ends
+
+            
+            // SignalR Code to Web App Server to Azure Function starts
+            var functionUrl = "http://smarthomeapp.azurewebsites.net/api/HttpTrigger"; 
+
+            // Prepare to send a request to the Azure function
+            var requestData = new
+            {
+                DeviceId = deviceId,
+                NewState = device.State
+            };
+
+            var jsonContent = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+
+            // Send the HTTP request to the Azure function for testing / Not working yet
+            var response = await _httpClient.PostAsync(functionUrl, jsonContent);
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Device toggle event successfully sent to Azure function.");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to notify Azure function: {response.StatusCode}");
+            }
+            // SignalR Code to Web App Server to Azure Function ends
+            
         }
     }
 
