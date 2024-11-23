@@ -24,7 +24,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins", builder =>
     {
-        builder.WithOrigins("https://localhost:4200", "https://127.0.0.1:4200") // Both origins
+        builder.WithOrigins("https://localhost:4200", "https://127.0.0.1:4200", "https://smarthomeapp.azurewebsites.net/") // Both origins
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials(); // Required for SignalR with CORS

@@ -12,12 +12,14 @@ export class UserListComponent implements OnInit {
   user: any = null; // Stocke les informations de l'utilisateur connecté
   private hubConnection: signalR.HubConnection | null = null;
   selectedUser: any = null; // Pour stocker l'utilisateur sélectionné pour le modal
+  latestUpdate: string = '';
 
   constructor(private userService: UserService, private router: Router) { }  // Ajouter Router ici
 
   ngOnInit(): void {
     this.loadConnectedUser(); // Charge l'utilisateur connecté lors de l'initialisation
     this.startSignalRConnection();
+    //this.startSignalRConnectionWithAzureFunction(); // Causing error, to diagnose.... This is the function that will connect with Azure Function through SignalR
   }
 
   // Méthode pour charger l'utilisateur connecté
@@ -82,7 +84,7 @@ export class UserListComponent implements OnInit {
     );
   }
 
-  private startSignalRConnection(): void {
+  private startSignalRConnection(): void { // with self
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl('https://localhost:7156/deviceHub')
       .build();
@@ -96,4 +98,84 @@ export class UserListComponent implements OnInit {
       this.loadConnectedUser(); // Recharge les données pour refléter les changements
     });
   }
+
+  private startSignalRConnectionWithAzureFunction(): void {
+    fetch('https://smarthomeapp.azurewebsites.net/api/negotiate')
+      .then(response => response.json())
+      .then(connectionInfo => {
+        console.log('Connection Info:', connectionInfo);
+
+        this.hubConnection = new signalR.HubConnectionBuilder()
+          .withUrl(connectionInfo.url, { accessTokenFactory: () => connectionInfo.accessToken })
+          .build();
+
+        console.log('Attempting to start SignalR connection...');
+
+        this.hubConnection.start()
+          .then(() => {
+            console.log('SignalR Connected');
+            this.logConnectionState();
+          })
+          .catch(err => {
+            console.error('SignalR Connection Error:', err);
+          });
+
+        this.hubConnection.onclose(error => {
+          console.error('SignalR connection closed due to an error:', error);
+          this.logConnectionState();
+        });
+
+        this.hubConnection.onreconnected(connectionId => {
+          console.log('Reconnected to SignalR with connection ID:', connectionId);
+          this.logConnectionState();
+        });
+
+        this.hubConnection.onreconnecting(error => {
+          console.log('Reconnecting to SignalR...');
+          this.logConnectionState();
+        });
+
+        setInterval(() => {
+          this.logConnectionState();
+        }, 5000);
+      })
+      .catch(err => {
+        console.error('Negotiate request failed:', err);
+      });
+  }
+
+  private logConnectionState() {
+    if (this.hubConnection) {
+      const state = this.hubConnection.state;
+      console.log('SignalR Connection State:', state);
+
+      switch (state) {
+        case signalR.HubConnectionState.Disconnected:
+          console.log('Connection is disconnected');
+          break;
+        case signalR.HubConnectionState.Connecting:
+          console.log('Connecting to SignalR...');
+          break;
+        case signalR.HubConnectionState.Connected:
+          console.log('Successfully connected to SignalR');
+          break;
+        case signalR.HubConnectionState.Reconnecting:
+          console.log('Reconnecting to SignalR...');
+          break;
+        default:
+          console.log('Unknown connection state');
+      }
+    }
+  }
+
+  private setupRealTimeEventListeners() {
+    if (this.hubConnection) {
+      this.hubConnection.on('DeviceStateChanged', (update) => {
+        console.log('Device state changed:', update);
+        this.latestUpdate = update;
+      });
+    }
+  }
+
+
 }

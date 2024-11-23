@@ -146,7 +146,7 @@ public class UserService
 
             
             // SignalR Code to Web App Server to Azure Function starts
-            var functionUrl = "http://smarthomeapp.azurewebsites.net/api/HttpTrigger"; 
+            var functionUrl = "http://smarthomeapp.azurewebsites.net/api/negotiate"; 
 
             // Prepare to send a request to the Azure function
             var requestData = new
