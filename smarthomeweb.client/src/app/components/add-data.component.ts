@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService, Home, Room } from '../services/user.service';
-
+import { Router } from '@angular/router';  // Importer Router
 
 @Component({
   selector: 'app-add-data',
@@ -15,10 +15,24 @@ export class AddDataComponent implements OnInit {
   rooms: Room[] = [];
 
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit() {
     this.loadHomes();
+  }
+
+  // Méthode de déconnexion
+  logout() {
+    // Appeler la méthode de déconnexion du service
+    this.userService.logout().subscribe(
+      response => {
+        console.log('Logout successful');
+        this.router.navigate(['/login']);  // Effectuer la redirection vers la page de login
+      },
+      error => {
+        console.error('Logout failed:', error);
+      }
+    );
   }
 
   loadHomes() {

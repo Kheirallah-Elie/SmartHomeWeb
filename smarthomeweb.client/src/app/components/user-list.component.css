@@ -1,75 +1,127 @@
-/* Container principal */
+/* Corps principal */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background: #f4f4f9;
+}
+
+/* Conteneur utilisateur */
 .user-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* En-tête utilisateur */
+.user-header {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background: linear-gradient(to bottom right, #e3edf7, #ffffff); /* Gradient subtil */
-  min-height: 100vh; /* Hauteur totale */
-  font-family: 'Arial', sans-serif;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 8px;
 }
 
-/* Cartes pour utilisateurs, maisons, et pièces */
-.user-card, .home-card, .room-card {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px; /* Coins arrondis modernes */
-  margin: 20px;
-  padding: 20px 25px; /* Espacement interne */
-  width: 100%; /* Prend toute la largeur */
-  max-width: 600px; /* Largeur maximale */
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Ombre douce */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-  /* Effet au survol des cartes */
-  .user-card:hover, .home-card:hover, .room-card:hover {
-    transform: translateY(-8px); /* Légère élévation */
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Ombre plus marquée */
+  .user-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
   }
 
-/* Titres */
-.user-name {
-  color: #212121;
-  font-size: 1.8em;
-  font-weight: 700; /* Gras */
-  margin-bottom: 10px;
+.logout-button {
+  background-color: #fa0404;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
-.home-nickname, .room-name {
+  .logout-button:hover {
+    background-color: #c00303;
+  }
+
+/* Conteneur des maisons */
+.home-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.home-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  flex: 1 1 calc(50% - 20px);
+  min-width: 300px;
+}
+
+  .home-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+
+.home-nickname {
+  font-size: 1.6rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* Conteneur des pièces */
+.rooms-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.room-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  flex: 1 1 calc(50% - 10px);
+  min-width: 250px;
+}
+
+.room-name {
+  font-size: 1.4rem;
   color: #555;
-  font-size: 1.4em;
-  font-weight: 500;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 /* Liste des appareils */
 .device-list {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .device-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
 }
 
 .device-info {
-  display: flex;
-  flex-direction: column;
+  flex: 1;
 }
 
 .device-description {
-  flex: 1;
+  font-size: 1rem;
   color: #333;
-  font-size: 1.1em;
 }
 
 .device-id {
-  font-size: 0.9em;
+  font-size: 0.9rem;
   color: #777;
 }
 
@@ -78,9 +130,9 @@
   background-color: #007bff;
   color: white;
   border: none;
-  padding: 8px 20px;
-  cursor: pointer;
+  padding: 8px 12px;
   border-radius: 4px;
+  cursor: pointer;
   transition: background-color 0.3s, transform 0.2s ease;
 }
 
@@ -96,77 +148,145 @@
   transform: translateY(-2px);
 }
 
-/* Boutons généraux */
-.add-data-button, .logout-button {
+/* Barre de navigation */
+.navbar {
+  margin-bottom: 20px; /* Ajoute un espace sous la barre de navigation */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #4a90e2;
   padding: 10px 20px;
-  font-size: 1em;
-  margin-bottom: 10px;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.add-data-button {
+/* Liens de navigation */
+.navbar-list {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-item a {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.navbar-item a:hover,
+.navbar-item a.active-link {
+  color: #ffdd57;
+  font-weight: bold;
+}
+
+/* Bouton Logout */
+.logout-button {
+  background-color: #ff5c5c;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #ff3b3b;
+}
+
+/* Conteneur principal du tableau de bord */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: auto;
+  padding: 20px;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Conteneur des maisons */
+.home-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* Style des cartes */
+.home-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+  .home-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+
+/* Conteneur des pièces */
+.rooms-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.room-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  flex: 1 1 calc(50% - 10px);
+  min-width: 250px;
+}
+
+/* Styles des boutons */
+.toggle-button {
   background-color: #4caf50;
   color: white;
-}
-
-  .add-data-button:hover {
-    background-color: #3e8e41;
-  }
-
-.logout-button {
-  background-color: #fa0404;
-  color: white;
-}
-
-  .logout-button:hover {
-    background-color: #c00303;
-  }
-
-/* Style des sections */
-h2, h3, h4 {
-  color: #333;
-  font-size: 1.8em;
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-/* Titre de la modal */
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.close {
-  font-size: 2em;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
   cursor: pointer;
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Responsive */
+.on-button {
+  background-color: #28a745;
+}
+
+.off-button {
+  background-color: #dc3545;
+}
+
+.toggle-button:hover {
+  transform: translateY(-3px);
+  background-color: #0056b3;
+}
+
+/* Réactivité */
 @media (max-width: 768px) {
-  .user-card, .home-card, .room-card {
-    width: 90%;
-    margin: 10px auto;
+  .home-container {
+    grid-template-columns: 1fr;
   }
 
-  .user-name {
-    font-size: 1.5em;
+  .home-card {
+    flex: 1 1 100%;
   }
 
-  .home-nickname, .room-name {
-    font-size: 1.2em;
-  }
-
-  .toggle-button {
-    width: 100%;
-    padding: 12px 0;
-  }
-
-  .add-data-button, .logout-button {
-    width: 100%;
-    padding: 12px 0;
+  .room-card {
+    flex: 1 1 100%;
   }
 }

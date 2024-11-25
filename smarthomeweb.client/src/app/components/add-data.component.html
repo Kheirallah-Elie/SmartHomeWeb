@@ -1,3 +1,11 @@
+<nav class="navbar">
+  <ul class="navbar-list">
+    <li class="navbar-item"><a routerLink="/users" routerLinkActive="active-link">Dashboard</a></li>
+    <li class="navbar-item"><a routerLink="/add" routerLinkActive="active-link">Add Data</a></li>
+  </ul>
+  <button class="logout-button" (click)="logout()">Logout</button>
+</nav>
+
 <div class="add-data-container">
   <h2 class="section-title">Add a Home</h2>
   <form (ngSubmit)="addHome()" class="form">

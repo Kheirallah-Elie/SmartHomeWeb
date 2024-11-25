@@ -1,48 +1,41 @@
-<div *ngIf="user" class="user-container">
-  <div class="user-card">
-    <h2 class="user-name" (click)="openModal(user)">{{ user.name }}</h2>
-    <p>Email: {{ user.email }}</p>
+<nav class="navbar">
+  <ul class="navbar-list">
+    <li class="navbar-item"><a routerLink="/users" routerLinkActive="active-link">Dashboard</a></li>
+    <li class="navbar-item"><a routerLink="/add" routerLinkActive="active-link">Add Data</a></li>
+  </ul>
+  <button class="logout-button" (click)="logout()">Logout</button>
+</nav>
+
+<div *ngIf="user" class="dashboard-container">
+ 
+
+  <div class="home-container">
     <div *ngFor="let home of user.homes" class="home-card">
-      <h3 class="home-nickname">{{ home.nickname }}</h3>
-      <div *ngFor="let room of home.rooms" class="room-card">
-        <h4 class="room-name">{{ room.name }}</h4>
-        <ul class="device-list">
-          <li *ngFor="let device of room.devices" class="device-item">
-            <div class="device-info">
-              <span class="device-description">Device: <strong class="bigger-description">{{ device.description }}</strong></span>
-              <span class="device-id">ID: <strong>{{ device.deviceId }}</strong></span>
-            </div>
-            <!-- Bouton d'activation/désactivation de l'appareil -->
-            <button class="toggle-button"
-                    [ngClass]="{'on-button': device.state, 'off-button': !device.state}"
-                    (click)="toggleDeviceState(home.homeId, room.roomId, device.deviceId)">
-              {{ device.state ? 'On' : 'Off' }}
-            </button>
-          </li>
-        </ul>
+      <h2 class="home-nickname">
+        🏠 {{ home.nickname }}
+      </h2>
+
+      <div class="rooms-container">
+        <div *ngFor="let room of home.rooms" class="room-card">
+          <h3 class="room-name">🛋️ {{ room.name }}</h3>
+          <ul class="device-list">
+            <li *ngFor="let device of room.devices" class="device-item">
+              <div class="device-info">
+                <span class="device-description">
+                  🔌 <strong>{{ device.description }}</strong>
+                </span>
+                <span class="device-id">ID: {{ device.deviceId }}</span>
+              </div>
+              <button class="toggle-button"
+                      [ngClass]="{'on-button': device.state, 'off-button': !device.state}"
+                      (click)="toggleDeviceState(home.homeId, room.roomId, device.deviceId)">
+                {{ device.state ? 'Turn Off' : 'Turn On' }}
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Bouton pour ajouter des données -->
-<div>
-  <button class="add-data-button" routerLink="/add">Add Data</button>
-</div>
-
-<!-- Bouton de déconnexion -->
-<div>
-  <button class="logout-button" (click)="logout()">Logout</button>
-</div>
-
-<!-- Modal pour afficher les informations de l'utilisateur -->
-<div class="modal" *ngIf="selectedUser">
-  <div class="modal-content">
-    <span class="close" (click)="closeModal()">&times;</span>
-    <h2>User Information</h2>
-    <p><strong>Name:</strong> {{ selectedUser.name }}</p>
-    <p><strong>Email:</strong> {{ selectedUser.email }}</p>
-    <p><strong>Homes:</strong> {{ selectedUser.homes.length }}</p>
-    <!-- Plus de champs peuvent être ajoutés ici si nécessaire -->
-  </div>
-</div>
