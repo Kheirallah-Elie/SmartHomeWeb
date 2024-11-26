@@ -5,31 +5,31 @@ using System.Threading.Tasks;
 [ApiController]
 public class RoomController : ControllerBase
 {
-    private readonly UserService _userService;
+    private readonly RoomService _roomService;
 
-    public RoomController(UserService userService)
+    public RoomController(RoomService roomService)
     {
-        _userService = userService;
+        _roomService = roomService;
     }
 
     [HttpPost]
     public async Task<IActionResult> AddRoom(string userId, string homeId, Room room)
     {
-        await _userService.AddRoomAsync(userId, homeId, room);
+        await _roomService.AddRoomAsync(userId, homeId, room);
         return Ok(room);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetRooms(string userId, string homeId)
     {
-        var rooms = await _userService.GetRoomsByHomeIdAsync(userId, homeId);
+        var rooms = await _roomService.GetRoomsByHomeIdAsync(userId, homeId);
         return Ok(rooms);
     }
 
     [HttpDelete("{roomId}")]
     public async Task<IActionResult> DeleteRoom(string userId, string homeId, string roomId)
     {
-        await _userService.DeleteRoomAsync(userId, homeId, roomId);
+        await _roomService.DeleteRoomAsync(userId, homeId, roomId);
         return NoContent();
     }
 }

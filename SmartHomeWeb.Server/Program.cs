@@ -1,11 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using SmartHomeWeb.Server;
-using System.Text;
 using Microsoft.Azure.SignalR;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,20 +12,23 @@ builder.Services.AddHttpClient<UserService>(); // Register HttpClient for UserSe
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configure CORS ---->>>>> (en gros cest pour permettre à notre site web d'acceder l'api)
+// Add CORS services.
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigins", builder =>
+    options.AddDefaultPolicy(policy =>
     {
-        builder.WithOrigins("https://localhost:4200", "https://127.0.0.1:4200", "https://smarthomeapp.azurewebsites.net/") // Both origins
-               .AllowAnyMethod()
-               .AllowAnyHeader()
-               .AllowCredentials(); // Required for SignalR with CORS
+        policy.AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+        .SetIsOriginAllowed(origin => true); // Allow all origins for testing. Restrict this in production.
     });
 });
 
 builder.Services.AddSingleton<MongoDBContext>();
 builder.Services.AddSingleton<UserService>();
+builder.Services.AddSingleton<HomeService>();
+builder.Services.AddSingleton<RoomService>();
+builder.Services.AddSingleton<DeviceService>();
 
 #region CHANGES 
 // Add Session support
@@ -66,18 +62,9 @@ app.UseRouting(); // Ensure UseRouting is before UseCors, UseSession, and UseEnd
 app.UseSession();// Enable sessions
 #endregion
 
-app.UseCors("AllowSpecificOrigins"); // Apply updated CORS policy
-
+app.UseCors();
 app.UseAuthorization();
-
 app.MapControllers();
 app.MapFallbackToFile("/index.html");
-
-// SignalR configuration
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-    endpoints.MapHub<DeviceHub>("/deviceHub");
-});
-
+app.MapHub<DeviceHub>("/deviceHub"); // the SignalR pattern
 app.Run();

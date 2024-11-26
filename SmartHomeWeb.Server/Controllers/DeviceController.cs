@@ -5,17 +5,17 @@ using System.Threading.Tasks;
 [ApiController]
 public class DeviceController : ControllerBase
 {
-    private readonly UserService _userService;
-
-    public DeviceController(UserService userService)
+    private readonly DeviceService _deviceService;
+    
+    public DeviceController(DeviceService deviceService)
     {
-        _userService = userService;
+        _deviceService = deviceService;
     }
 
     [HttpPost]
     public async Task<IActionResult> AddDevice(string userId, string homeId, string roomId, Device device)
     {
-        await _userService.AddDeviceAsync(userId, homeId, roomId, device);
+        await _deviceService.AddDeviceAsync(userId, homeId, roomId, device);
         return Ok(device);
     }
 
@@ -24,14 +24,14 @@ public class DeviceController : ControllerBase
     public async Task<IActionResult> ToggleDeviceState(string userId, string homeId, string roomId, string deviceId)
     {
         // Logique pour changer l'état de l'appareil
-        await _userService.ToggleDeviceStateAsync(userId, homeId, roomId, deviceId);
+        await _deviceService.ToggleDeviceStateAsync(userId, homeId, roomId, deviceId);
         return NoContent(); // Indique que l'opération a été effectuée avec succès
     }
 
     [HttpDelete("{deviceId}")]
     public async Task<IActionResult> DeleteDevice(string userId, string homeId, string roomId, string deviceId)
     {
-        await _userService.DeleteDeviceAsync(userId, homeId, roomId, deviceId);
+        await _deviceService.DeleteDeviceAsync(userId, homeId, roomId, deviceId);
         return NoContent(); // Indique que l'appareil a été supprimé avec succès
     }
 }

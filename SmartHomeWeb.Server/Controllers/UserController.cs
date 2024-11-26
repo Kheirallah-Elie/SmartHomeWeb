@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using MongoDB.Bson;
-using Microsoft.AspNetCore.Identity.Data;
 
 [Route("api/[controller]")]
 [ApiController]
