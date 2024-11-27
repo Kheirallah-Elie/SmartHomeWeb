@@ -1,4 +1,7 @@
 // Attendre que le DOM soit chargé
+
+// Alain, il sert a quelque chose ce code?
+
 document.addEventListener('DOMContentLoaded', function () {
   // Sélectionner le formulaire
   const loginForm = document.getElementById('loginForm');

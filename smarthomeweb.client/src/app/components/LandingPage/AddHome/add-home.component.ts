@@ -19,20 +19,6 @@ export class AddHomeComponent implements OnInit {
   ngOnInit() {
   }
 
-  // Méthode de déconnexion
-  logout() {
-    // Appeler la méthode de déconnexion du service
-    this.userService.logout().subscribe(
-      response => {
-        console.log('Logout successful');
-        this.router.navigate(['/login']);  // Effectuer la redirection vers la page de login
-      },
-      error => {
-        console.error('Logout failed:', error);
-      }
-    );
-  }
-
   addHome() {
     const userId = this.userService.getUserId();
     if (!userId) {

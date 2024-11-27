@@ -23,20 +23,6 @@ export class AddDeviceComponent implements OnInit {
     this.loadHomes();
   }
 
-  // Méthode de déconnexion
-  logout() {
-    // Appeler la méthode de déconnexion du service
-    this.userService.logout().subscribe(
-      response => {
-        console.log('Logout successful');
-        this.router.navigate(['/login']);  // Effectuer la redirection vers la page de login
-      },
-      error => {
-        console.error('Logout failed:', error);
-      }
-    );
-  }
-
   loadHomes() {
     const userId = this.userService.getUserId();
     if (userId) { // Add null check

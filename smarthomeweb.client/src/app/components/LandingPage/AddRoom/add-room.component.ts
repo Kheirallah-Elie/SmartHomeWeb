@@ -15,25 +15,10 @@ export class AddRoomComponent implements OnInit {
   homes: Home[] = [];
   rooms: Room[] = [];
 
-
   constructor(private userService: UserService, private homeService: HomeService, private roomService: RoomService, private router: Router) { }
 
   ngOnInit() {
     this.loadHomes();
-  }
-
-  // Méthode de déconnexion
-  logout() {
-    // Appeler la méthode de déconnexion du service
-    this.userService.logout().subscribe(
-      response => {
-        console.log('Logout successful');
-        this.router.navigate(['/login']);  // Effectuer la redirection vers la page de login
-      },
-      error => {
-        console.error('Logout failed:', error);
-      }
-    );
   }
 
   loadHomes() {
@@ -44,20 +29,6 @@ export class AddRoomComponent implements OnInit {
           this.homes = homes;
         },
         (error) => console.error('Error loading homes:', error)
-      );
-    } else {
-      console.error('No user ID found');
-    }
-  }
-
-  loadRooms(homeId: string) {
-    const userId = this.userService.getUserId();
-    if (userId) { // Add null check
-      this.roomService.getRoomsByHomeId(userId, homeId).subscribe(
-        (rooms) => {
-          this.rooms = rooms;
-        },
-        (error) => console.error('Error loading rooms:', error)
       );
     } else {
       console.error('No user ID found');
@@ -85,5 +56,4 @@ export class AddRoomComponent implements OnInit {
       (error) => console.error('Erreur lors de l\'ajout de la pièce :', error)
     );
   }
-
 }

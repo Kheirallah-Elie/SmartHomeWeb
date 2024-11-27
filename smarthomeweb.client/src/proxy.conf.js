@@ -5,12 +5,11 @@ const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_H
 
 const PROXY_CONFIG = [
   {
-    context: [
-      "/weatherforecast",
-    ],
-    target,
-    secure: false
+    context: ["/api"], // Redirige toutes les requêtes commençant par /api vers le backend
+    target: target,
+    secure: false,
+    changeOrigin: true
   }
-]
+];
 
 module.exports = PROXY_CONFIG;
