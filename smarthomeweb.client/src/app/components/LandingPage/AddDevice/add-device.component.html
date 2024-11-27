@@ -1,0 +1,36 @@
+<header-tab></header-tab>
+
+<div class="add-data-container">
+
+  <h2 class="section-title">Add a Device</h2>
+  <form (ngSubmit)="addDevice()" class="form">
+    <label for="deviceName" class="form-label">Device Name:</label>
+    <input type="text" id="deviceName" [(ngModel)]="device.name" name="deviceName" class="form-input" required />
+
+    <label for="homeId" class="form-label">Select Home:</label>
+    <select id="homeId" [(ngModel)]="device.homeId" name="homeId" (change)="loadRooms(device.homeId)" class="form-input" required>
+      <option *ngFor="let home of homes" [value]="home.homeId">{{ home.nickname }}</option>
+    </select>
+
+    <label for="roomId" class="form-label">Select Room:</label>
+    <select id="roomId" [(ngModel)]="device.roomId" name="roomId" class="form-input" required>
+      <option *ngFor="let room of rooms" [value]="room.roomId">{{ room.name }}</option>
+    </select>
+
+    <label for="deviceState" class="form-label">Device Initial State:</label>
+    <input type="checkbox"
+           id="deviceState"
+           [(ngModel)]="device.state"
+           name="deviceState"
+           class="form-checkbox"
+           [value]="true"
+           [attr.checked]="device.state ? true : null" />
+
+    <span class="device-state-message" [ngClass]="device.state ? 'on' : 'off'">
+      {{ device.state ? 'Device is On' : 'Device is Off' }}
+    </span>
+
+    <button type="submit" class="form-button">Add Device</button>
+  </form>
+</div>
+

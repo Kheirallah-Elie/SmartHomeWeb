@@ -1,0 +1,15 @@
+<header-tab></header-tab>
+
+
+<div class="add-data-container">
+  <h2 class="section-title">Add a Home</h2>
+  <form (ngSubmit)="addHome()" class="form">
+    <label for="homeName" class="form-label">Home Name:</label>
+    <input type="text" id="homeName" [(ngModel)]="home.name" name="homeName" class="form-input" required />
+    <label for="homeAddress" class="form-label">Home Adress:</label>
+    <input type="text" id="homeAddress" [(ngModel)]="home.address" name="homeAddress" class="form-input" required />
+    <button type="submit" class="form-button">Add Home</button>
+  </form>
+
+</div>
+

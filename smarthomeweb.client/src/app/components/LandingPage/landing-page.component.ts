@@ -1,20 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../services/user.service';
+import { UserService } from '../../services/user.service';
+import { DeviceService } from '../../services/device.service'
 import * as signalR from "@microsoft/signalr";
 import { Router } from '@angular/router';  // Importer Router
 
 @Component({
-  selector: 'app-user-list',
-  templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.css']
+  selector: 'landing-page',
+  templateUrl: './landing-page.component.html',
+  styleUrls: ['./landing-page.component.css']
 })
-export class UserListComponent implements OnInit {
+export class LandingPageComponent implements OnInit {
   user: any = null; // Stocke les informations de l'utilisateur connecté
   private hubConnection: signalR.HubConnection | null = null;
   selectedUser: any = null; // Pour stocker l'utilisateur sélectionné pour le modal
   latestUpdate: string = '';
 
-  constructor(private userService: UserService, private router: Router) { }  // Ajouter Router ici
+  constructor(private userService: UserService, private deviceService: DeviceService, private router: Router) { }  // Ajouter Router ici
 
   ngOnInit(): void {
     this.loadConnectedUser(); // Charge l'utilisateur connecté lors de l'initialisation
@@ -59,7 +60,7 @@ export class UserListComponent implements OnInit {
       return;
     }
 
-    this.userService.toggleDeviceState(this.user.userId, homeId, roomId, deviceId).subscribe(
+    this.deviceService.toggleDeviceState(this.user.userId, homeId, roomId, deviceId).subscribe(
       () => {
         console.log(homeId);
         this.loadConnectedUser(); // Recharge les données de l'utilisateur pour mettre à jour l'état
@@ -70,19 +71,6 @@ export class UserListComponent implements OnInit {
     );
   }
 
-  // Méthode de déconnexion
-  logout() {
-    // Appeler la méthode de déconnexion du service
-    this.userService.logout().subscribe(
-      response => {
-        console.log('Logout successful');
-        this.router.navigate(['/login']);  // Effectuer la redirection vers la page de login
-      },
-      error => {
-        console.error('Logout failed:', error);
-      }
-    );
-  }
 
   private startSignalRConnection(): void { // with self
     this.hubConnection = new signalR.HubConnectionBuilder()

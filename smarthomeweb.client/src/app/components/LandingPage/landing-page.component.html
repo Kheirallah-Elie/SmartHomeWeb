@@ -1,13 +1,7 @@
-<nav class="navbar">
-  <ul class="navbar-list">
-    <li class="navbar-item"><a routerLink="/users" routerLinkActive="active-link">Dashboard</a></li>
-    <li class="navbar-item"><a routerLink="/add" routerLinkActive="active-link">Add Data</a></li>
-  </ul>
-  <button class="logout-button" (click)="logout()">Logout</button>
-</nav>
+<header-tab></header-tab>
 
 <div *ngIf="user" class="dashboard-container">
- 
+
 
   <div class="home-container">
     <div *ngFor="let home of user.homes" class="home-card">
