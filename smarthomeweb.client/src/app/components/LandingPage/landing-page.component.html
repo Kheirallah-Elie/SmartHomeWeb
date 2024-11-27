@@ -1,5 +1,13 @@
 <header-tab></header-tab>
 
+<!-- Message de bienvenue -->
+<div *ngIf="user" class="welcome-container">
+  <div class="welcome-message">
+    <h1>Welcome back, <span class="user-name">{{ user?.email }}</span>!</h1>
+    <p class="welcome-subtext">We're excited to have you back. Explore your homes and manage your devices with ease.</p>
+  </div>
+</div>
+
 <div *ngIf="user" class="dashboard-container">
   <div class="home-container">
     <div *ngFor="let home of user.homes" class="home-card">
