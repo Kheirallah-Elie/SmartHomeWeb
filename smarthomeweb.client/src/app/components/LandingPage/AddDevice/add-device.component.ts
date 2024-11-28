@@ -16,6 +16,7 @@ export class AddDeviceComponent implements OnInit {
   device = { name: '', homeId: '', roomId: '', state: false };
   homes: Home[] = [];
   rooms: Room[] = [];
+  showAlert = false; // Propriété pour contrôler l'affichage de l'alerte
 
   constructor(private userService: UserService, private homeService: HomeService, private roomService: RoomService, private deviceService: DeviceService, private router: Router) { }
 
@@ -69,6 +70,9 @@ export class AddDeviceComponent implements OnInit {
       (response) => {
         console.log('Appareil ajouté avec succès:', response);
         this.device = { name: '', homeId: '', roomId: '', state: false };
+
+        // Mettre le show alerte a True pour afficher l'alerte
+        this.showAlert = true;
       },
       (error) => console.error('Erreur lors de l\'ajout de l\'appareil :', error)
     );

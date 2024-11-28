@@ -1,68 +1,110 @@
 /* Conteneur principal */
+/* Conteneur Principal */
 .add-data-container {
   max-width: 600px;
+  width: 90%; /* Ajuste la largeur pour s'adapter aux petits écrans */
   margin: 0 auto;
-  padding: 20px;
-  background: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 30px 20px;
+  background: linear-gradient(to bottom right, #ffffff, #f1f5f9);
+  border-radius: 12px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
   font-family: Arial, sans-serif;
-}
-
-/* Titres de section */
-.section-title {
-  font-size: 1.5em;
-  color: #333;
-  margin-bottom: 15px;
   text-align: center;
-  border-bottom: 2px solid #007BFF;
-  padding-bottom: 5px;
+  margin-top: 100px;
 }
 
-/* Formulaires */
+/* Page entière (corps du document) */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Assure que le parent occupe toute la fenêtre */
+  display: flex;
+  justify-content: center; /* Centre horizontalement */
+  align-items: center; /* Centre verticalement */
+  background: linear-gradient(to top right, #007bff, #0056b3); /* Arrière-plan moderne */
+  color: #333;
+}
+
+/* Titre de Section */
+.section-title {
+  font-size: 2rem;
+  color: #0056b3;
+  margin-bottom: 25px;
+  font-weight: bold;
+}
+
+/* Formulaire */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 15px;
+  align-items: center;
 }
 
-.form-label {
-  font-size: 1.2em;
-  font-weight: 600;
-  color: #333;
-  margin-right: 10px;
-}
-
-.form-input, .form-checkbox {
-  padding: 10px;
+/* Champs de saisie */
+.form-input {
+  padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 15px;
   font-size: 1em;
+  width: 80%;
+  transition: all 0.3s ease;
 }
 
   .form-input:focus {
-    border-color: #007BFF;
+    border-color: #007bff;
     outline: none;
-    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.5);
   }
+/* Pour élargir le select dans le form */
+#homeId, #roomId {
+  width: 85%;
+}
 
-/* Boutons */
+/* Bouton */
 .form-button {
-  padding: 10px 15px;
-  background-color: #007BFF;
-  color: #fff;
-  font-size: 1em;
+  background: linear-gradient(to right, #007bff, #0056b3);
+  color: white;
+  font-size: 1.1rem;
   font-weight: bold;
+  padding: 12px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  width: 50%;
 }
 
   .form-button:hover {
-    background-color: #0056b3;
+    background: linear-gradient(to right, #0056b3, #003d82);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
+  .form-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: #666;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .add-data-container {
+    padding: 20px;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .form-input {
+    width: 90%;
+  }
+
+  .form-button {
+    width: 70%;
+  }
+}
+
 
 /* Message d'état du dispositif */
 .device-state-message {
@@ -152,3 +194,19 @@ input[type="checkbox"] {
   .logout-button:hover {
     background-color: #ff3b3b;
   }
+
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.alert-success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+

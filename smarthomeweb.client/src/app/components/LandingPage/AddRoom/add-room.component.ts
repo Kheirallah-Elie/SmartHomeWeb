@@ -14,6 +14,7 @@ export class AddRoomComponent implements OnInit {
   room = { name: '', homeId: '' };
   homes: Home[] = [];
   rooms: Room[] = [];
+  showAlert = false; // Propriété pour contrôler l'affichage de l'alerte
 
   constructor(private userService: UserService, private homeService: HomeService, private roomService: RoomService, private router: Router) { }
 
@@ -52,6 +53,8 @@ export class AddRoomComponent implements OnInit {
       (response) => {
         console.log('Pièce ajoutée avec succès:', response);
         this.room = { name: '', homeId: '' };
+        // Mettre le show alerte a True pour afficher l'alerte
+        this.showAlert = true;
       },
       (error) => console.error('Erreur lors de l\'ajout de la pièce :', error)
     );

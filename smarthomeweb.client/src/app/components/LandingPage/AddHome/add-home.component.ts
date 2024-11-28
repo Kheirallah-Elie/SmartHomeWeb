@@ -13,6 +13,7 @@ import { Router } from '@angular/router';  // Importer Router
 export class AddHomeComponent implements OnInit {
   home = { name: '', address: '' };
   homes: Home[] = [];
+  showAlert = false; // Propriété pour contrôler l'affichage de l'alerte
 
   constructor(private userService: UserService, private homeService: HomeService, private router: Router) { }
 
@@ -37,6 +38,9 @@ export class AddHomeComponent implements OnInit {
       (response) => {
         console.log('Home successfully added:', response);
         this.home = { name: '', address: '' };
+
+        // Mettre le show alerte a True pour afficher l'alerte
+        this.showAlert = true;
       },
       (error) => console.error('Adding Home failed :', error)
     );
