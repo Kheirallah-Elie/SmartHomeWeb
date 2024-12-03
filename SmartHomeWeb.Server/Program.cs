@@ -66,5 +66,7 @@ app.UseCors();
 app.UseAuthorization();
 app.MapControllers();
 app.MapFallbackToFile("/index.html");
+
+
 app.MapHub<DeviceHub>("/deviceHub"); // the SignalR pattern
 app.Run();
