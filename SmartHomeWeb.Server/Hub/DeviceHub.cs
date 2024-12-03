@@ -2,5 +2,8 @@
 
 public class DeviceHub : Hub
 {
-    // This hub can be extended with methods for client-to-server communication if needed
+    public async Task SendMessage(string message)
+    {
+        Console.WriteLine($"message: {message}");
+    }
 }

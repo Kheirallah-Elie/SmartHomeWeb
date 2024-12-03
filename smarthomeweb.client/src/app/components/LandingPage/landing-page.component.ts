@@ -4,6 +4,7 @@ import { DeviceService } from '../../services/device.service'
 import { HomeService } from '../../services/home.service';
 import * as signalR from "@microsoft/signalr";
 import { Router } from '@angular/router';  // Importer Router
+import { SignalRService } from '../../services/device-signalr.service';
 
 @Component({
   selector: 'landing-page',
@@ -11,6 +12,7 @@ import { Router } from '@angular/router';  // Importer Router
   styleUrls: ['./landing-page.component.css']
 })
 export class LandingPageComponent implements OnInit {
+
   user: any = null; // Stocke les informations de l'utilisateur connecté
   private hubConnection: signalR.HubConnection | null = null;
   selectedUser: any = null; // Pour stocker l'utilisateur sélectionné pour le modal
@@ -18,19 +20,23 @@ export class LandingPageComponent implements OnInit {
   homeToDeleteId: string | null = null;  // ID de la maison à supprimer
   modalsState: { [homeId: string]: boolean } = {};
 
-  constructor(private userService: UserService, private homeService: HomeService, private deviceService: DeviceService, private router: Router) { }  // Ajouter Router ici
+  constructor(
+    private userService: UserService,
+    private homeService: HomeService,
+    private deviceService: DeviceService,
+    private signalRService: SignalRService,  // Inject SignalRService
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.loadConnectedUser(); // Charge l'utilisateur connecté lors de l'initialisation
-    //this.startSignalRConnection();
-    //this.startSignalRConnectionWithAzureFunction(); // Causing error, to diagnose.... This is the function that will connect with Azure Function through SignalR
+    this.startSignalRConnection(); // Establish connection for device updates
   }
 
   // Méthode pour charger l'utilisateur connecté
   private loadConnectedUser(): void {
     const userId = this.userService.getUserId();
-
-    console.log("user ID ->", userId);//debug
+    console.log("user ID ->", userId); //debug
 
     if (userId) {
       this.userService.getUserById(userId).subscribe(
@@ -49,11 +55,11 @@ export class LandingPageComponent implements OnInit {
 
   openConfirmationModal(homeId: string): void {
     this.homeToDeleteId = homeId;
-    this.modalsState[homeId] = true;  
+    this.modalsState[homeId] = true;
   }
 
   closeConfirmationModal(homeId: string): void {
-    this.modalsState[homeId] = false; 
+    this.modalsState[homeId] = false;
     this.homeToDeleteId = null;
   }
 
@@ -64,6 +70,7 @@ export class LandingPageComponent implements OnInit {
   closeModal(): void {
     this.selectedUser = null; // Réinitialise l'utilisateur sélectionné
   }
+
 
   // Méthode pour basculer l'état d'un appareil
   toggleDeviceState(homeId: string, roomId: string, deviceId: string): void {
@@ -99,6 +106,46 @@ export class LandingPageComponent implements OnInit {
     });
   }
 
+  /*
+  // Méthode pour basculer l'état d'un appareil
+  toggleDeviceState(homeId: string, roomId: string, deviceId: string): void {
+    // Vérifie que les ID sont définis avant de faire l'appel
+    if (!this.user?.userId || !homeId || !roomId || !deviceId) {
+      console.error('One or more IDs are undefined:', { userId: this.user?.userId, homeId, roomId, deviceId });
+      return;
+    }
+
+    // Toggle device state locally
+    this.deviceService.toggleDeviceState(this.user.userId, homeId, roomId, deviceId).subscribe(
+      () => {
+        console.log(homeId);
+        this.loadConnectedUser(); // Recharge les données de l'utilisateur pour mettre à jour l'état
+
+        // Notify the Azure Function of the state change via SignalR
+        this.signalRService.sendMessage({
+          userId: this.user.userId,
+          homeId: homeId,
+          roomId: roomId,
+          deviceId: deviceId,
+          command: 'TOGGLE'
+        });
+      },
+      (error) => {
+        console.error('Error toggling device state:', error);
+      }
+    );
+  }
+
+  private startSignalRConnection(): void {
+    this.signalRService.startConnection();
+    this.signalRService.addMessageListener((message: string) => {
+      console.log('Real-time device update:', message);
+      this.loadConnectedUser(); // Update the UI when a device state changes
+    });
+  }*/
+
+
+
   deleteHome(): void {
     if (!this.homeToDeleteId || !this.user?.userId) {
       console.error('Home ID or User ID is missing.');
@@ -118,83 +165,4 @@ export class LandingPageComponent implements OnInit {
       }
     );
   }
-
-  private startSignalRConnectionWithAzureFunction(): void {
-    fetch('https://smarthomeapp.azurewebsites.net/api/negotiate')
-      .then(response => response.json())
-      .then(connectionInfo => {
-        console.log('Connection Info:', connectionInfo);
-
-        this.hubConnection = new signalR.HubConnectionBuilder()
-          .withUrl(connectionInfo.url, { accessTokenFactory: () => connectionInfo.accessToken })
-          .build();
-
-        console.log('Attempting to start SignalR connection...');
-
-        this.hubConnection.start()
-          .then(() => {
-            console.log('SignalR Connected');
-            this.logConnectionState();
-          })
-          .catch(err => {
-            console.error('SignalR Connection Error:', err);
-          });
-
-        this.hubConnection.onclose(error => {
-          console.error('SignalR connection closed due to an error:', error);
-          this.logConnectionState();
-        });
-
-        this.hubConnection.onreconnected(connectionId => {
-          console.log('Reconnected to SignalR with connection ID:', connectionId);
-          this.logConnectionState();
-        });
-
-        this.hubConnection.onreconnecting(error => {
-          console.log('Reconnecting to SignalR...');
-          this.logConnectionState();
-        });
-
-        setInterval(() => {
-          this.logConnectionState();
-        }, 5000);
-      })
-      .catch(err => {
-        console.error('Negotiate request failed:', err);
-      });
-  }
-
-  private logConnectionState() {
-    if (this.hubConnection) {
-      const state = this.hubConnection.state;
-      console.log('SignalR Connection State:', state);
-
-      switch (state) {
-        case signalR.HubConnectionState.Disconnected:
-          console.log('Connection is disconnected');
-          break;
-        case signalR.HubConnectionState.Connecting:
-          console.log('Connecting to SignalR...');
-          break;
-        case signalR.HubConnectionState.Connected:
-          console.log('Successfully connected to SignalR');
-          break;
-        case signalR.HubConnectionState.Reconnecting:
-          console.log('Reconnecting to SignalR...');
-          break;
-        default:
-          console.log('Unknown connection state');
-      }
-    }
-  }
-
-  private setupRealTimeEventListeners() {
-    if (this.hubConnection) {
-      this.hubConnection.on('DeviceStateChanged', (update) => {
-        console.log('Device state changed:', update);
-        this.latestUpdate = update;
-      });
-    }
-  }
-
 }

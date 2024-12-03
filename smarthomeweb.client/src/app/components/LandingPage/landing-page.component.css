@@ -503,7 +503,6 @@ body {
 
 .toggle-button:hover {
   transform: translateY(-3px);
-  background-color: #0056b3;
 }
 
 /* Réactivité */
