@@ -28,6 +28,10 @@ export class HomeService {
     return this.http.post(`${this.apiUrl}/${userId}/homes`, home);
   }
 
+  deleteHome(userId: string, homeId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${userId}/homes/${homeId}`);
+  }
+
   getHomesByUserId(userId: string): Observable<Home[]> {
     return this.http.get<Home[]>(`${this.apiUrl}/${userId}/homes`);
   }

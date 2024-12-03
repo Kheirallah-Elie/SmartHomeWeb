@@ -270,6 +270,164 @@ body {
   transition: all 0.3s ease;
 }
 
+/* Styles pour la modale de confirmation */
+.confirmation-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
+
+.modal-actions {
+  margin-top: 20px;
+}
+
+.confirm-button, .cancel-button {
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.confirm-button {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+.cancel-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.confirm-button:hover {
+  background-color: #e63e3e;
+}
+
+.cancel-button:hover {
+  background-color: #45a049;
+}
+
+.delete-home-button {
+  background-color: #ff4d4d;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-home-button:hover {
+  background-color: #e63e3e;
+}
+
+/* Icône et bouton de suppression - Modification de la position */
+.delete-home-button {
+  background-color: #ff4d4d; /* Rouge pour indiquer une action destructive */
+  color: white; /* Texte blanc */
+  border: none; /* Pas de bordure */
+  border-radius: 5px; /* Coins arrondis */
+  padding: 12px 18px; /* Espace interne pour un bouton bien visible */
+  font-size: 16px; /* Taille de texte lisible */
+  cursor: pointer; /* Changement du curseur survol */
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Espacement entre l'icône et le texte */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 15px; /* Espacement entre le bouton et les autres éléments */
+  margin-left: auto; /* Positionner le bouton à droite */
+  margin-right: 10px; /* Marges pour éviter la proximité de bord */
+  align-self: flex-end; /* Pour le positionner à la fin de son conteneur parent */
+}
+
+  /* Effet de survol */
+  .delete-home-button:hover {
+    background-color: #e60000; /* Rouge plus foncé au survol */
+    transform: scale(1.05); /* Agrandissement léger pour effet */
+  }
+
+  .delete-home-button:active {
+    background-color: #cc0000; /* Rouge encore plus foncé lors du clic */
+    transform: scale(0.98); /* Légère réduction pour simuler un effet de clic */
+  }
+
+  .delete-home-button:disabled {
+    background-color: #cccccc; /* Gris pour les boutons désactivés */
+    cursor: not-allowed; /* Indication que le bouton est désactivé */
+  }
+
+/* Styles pour un conteneur contenant le bouton de suppression */
+.home-card {
+  position: relative; /* Permet de positionner des éléments à l'intérieur de la carte */
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+  .home-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+
+.delete-home-button {
+  position: absolute;
+  top: 15px;
+  right: 15px; /* Placer le bouton en haut à droite */
+}
+
+/* Centrer les titres des home, rooms, et les device descriptions */
+.home-nickname, .room-name, .device-description {
+  text-align: center;
+  width: 100%;
+}
+
+.device-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Centrer les éléments dans le container des dispositifs */
+.device-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Espacement entre l'icône et le texte dans la description */
+.device-description {
+  margin-left: 10px; /* Ajoute de l'espace entre l'icône et le texte */
+}
+
+/* Optionnel: centrage du bouton toggle */
+.toggle-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Conteneur principal du tableau de bord */
 .dashboard-container {
   display: flex;

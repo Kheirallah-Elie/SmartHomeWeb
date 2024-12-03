@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { DeviceService } from '../../services/device.service'
+import { HomeService } from '../../services/home.service';
 import * as signalR from "@microsoft/signalr";
 import { Router } from '@angular/router';  // Importer Router
 
@@ -14,12 +15,14 @@ export class LandingPageComponent implements OnInit {
   private hubConnection: signalR.HubConnection | null = null;
   selectedUser: any = null; // Pour stocker l'utilisateur sélectionné pour le modal
   latestUpdate: string = '';
+  homeToDeleteId: string | null = null;  // ID de la maison à supprimer
+  modalsState: { [homeId: string]: boolean } = {};
 
-  constructor(private userService: UserService, private deviceService: DeviceService, private router: Router) { }  // Ajouter Router ici
+  constructor(private userService: UserService, private homeService: HomeService, private deviceService: DeviceService, private router: Router) { }  // Ajouter Router ici
 
   ngOnInit(): void {
     this.loadConnectedUser(); // Charge l'utilisateur connecté lors de l'initialisation
-    this.startSignalRConnection();
+    //this.startSignalRConnection();
     //this.startSignalRConnectionWithAzureFunction(); // Causing error, to diagnose.... This is the function that will connect with Azure Function through SignalR
   }
 
@@ -42,6 +45,16 @@ export class LandingPageComponent implements OnInit {
     } else {
       console.warn('No user ID found in localStorage');
     }
+  }
+
+  openConfirmationModal(homeId: string): void {
+    this.homeToDeleteId = homeId;
+    this.modalsState[homeId] = true;  
+  }
+
+  closeConfirmationModal(homeId: string): void {
+    this.modalsState[homeId] = false; 
+    this.homeToDeleteId = null;
   }
 
   openModal(user: any): void {
@@ -71,7 +84,6 @@ export class LandingPageComponent implements OnInit {
     );
   }
 
-
   private startSignalRConnection(): void { // with self
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl('https://localhost:7156/deviceHub')
@@ -85,6 +97,26 @@ export class LandingPageComponent implements OnInit {
       console.log('Device state changed:', update);
       this.loadConnectedUser(); // Recharge les données pour refléter les changements
     });
+  }
+
+  deleteHome(): void {
+    if (!this.homeToDeleteId || !this.user?.userId) {
+      console.error('Home ID or User ID is missing.');
+      return;
+    }
+
+    console.log(`Attempting to delete home with ID: ${this.homeToDeleteId}`);
+
+    this.homeService.deleteHome(this.user.userId, this.homeToDeleteId).subscribe(
+      () => {
+        console.log(`Home with ID ${this.homeToDeleteId} deleted successfully.`);
+        this.loadConnectedUser();
+        this.closeConfirmationModal(this.homeToDeleteId!); // Ferme la modale après la suppression
+      },
+      (error) => {
+        console.error(`Error deleting home with ID ${this.homeToDeleteId}:`, error);
+      }
+    );
   }
 
   private startSignalRConnectionWithAzureFunction(): void {
@@ -164,6 +196,5 @@ export class LandingPageComponent implements OnInit {
       });
     }
   }
-
 
 }

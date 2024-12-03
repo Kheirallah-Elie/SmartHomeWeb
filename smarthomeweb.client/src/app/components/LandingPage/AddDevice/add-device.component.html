@@ -4,7 +4,7 @@
 
   <h2 class="section-title">Add Device</h2>
   <div *ngIf="showAlert" class="alert alert-success">
-    Home successfully added !
+    Device successfully added !
   </div>
   <form (ngSubmit)="addDevice()" class="form">
     <input type="text" id="deviceName" [(ngModel)]="device.name" name="deviceName" class="form-input" required placeholder="Enter the device name" />
