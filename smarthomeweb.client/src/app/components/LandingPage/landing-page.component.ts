@@ -31,18 +31,17 @@ export class LandingPageComponent implements OnInit {
   ngOnInit(): void {
     this.loadConnectedUser(); // Charge l'utilisateur connecté lors de l'initialisation
     this.startSignalRConnection(); // Establish connection for device updates
+    this.startSignalRConnectionWithAzureFunction();
   }
 
   // Méthode pour charger l'utilisateur connecté
   private loadConnectedUser(): void {
     const userId = this.userService.getUserId();
-    console.log("user ID ->", userId); //debug
 
     if (userId) {
       this.userService.getUserById(userId).subscribe(
         user => {
           this.user = user; // Charge les informations de l'utilisateur connecté
-          console.log('Connected user:', this.user);
         },
         error => {
           console.error('Error fetching connected user:', error);
@@ -71,29 +70,9 @@ export class LandingPageComponent implements OnInit {
     this.selectedUser = null; // Réinitialise l'utilisateur sélectionné
   }
 
-
-  // Méthode pour basculer l'état d'un appareil
-  toggleDeviceState(homeId: string, roomId: string, deviceId: string): void {
-    // Vérifie que les ID sont définis avant de faire l'appel
-    if (!this.user?.userId || !homeId || !roomId || !deviceId) {
-      console.error('One or more IDs are undefined:', { userId: this.user?.userId, homeId, roomId, deviceId });
-      return;
-    }
-
-    this.deviceService.toggleDeviceState(this.user.userId, homeId, roomId, deviceId).subscribe(
-      () => {
-        console.log(homeId);
-        this.loadConnectedUser(); // Recharge les données de l'utilisateur pour mettre à jour l'état
-      },
-      (error) => {
-        console.error('Error toggling device state:', error);
-      }
-    );
-  }
-
   private startSignalRConnection(): void { // with self
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7156/deviceHub')
+      .withUrl('https://localhost:7156/User')
       .build();
 
     this.hubConnection.start().then(() => {
@@ -106,9 +85,11 @@ export class LandingPageComponent implements OnInit {
     });
   }
 
-  /*
+  
   // Méthode pour basculer l'état d'un appareil
   toggleDeviceState(homeId: string, roomId: string, deviceId: string): void {
+
+    console.log("User ID: " + this.user.userId + "\nHome ID: " + homeId + "\nRoom ID: " + roomId + "\nDevice ID: " + deviceId);
     // Vérifie que les ID sont définis avant de faire l'appel
     if (!this.user?.userId || !homeId || !roomId || !deviceId) {
       console.error('One or more IDs are undefined:', { userId: this.user?.userId, homeId, roomId, deviceId });
@@ -118,7 +99,6 @@ export class LandingPageComponent implements OnInit {
     // Toggle device state locally
     this.deviceService.toggleDeviceState(this.user.userId, homeId, roomId, deviceId).subscribe(
       () => {
-        console.log(homeId);
         this.loadConnectedUser(); // Recharge les données de l'utilisateur pour mettre à jour l'état
 
         // Notify the Azure Function of the state change via SignalR
@@ -126,24 +106,24 @@ export class LandingPageComponent implements OnInit {
           userId: this.user.userId,
           homeId: homeId,
           roomId: roomId,
-          deviceId: deviceId,
-          command: 'TOGGLE'
+          deviceId: deviceId
         });
+        console.log("Sending data to Azure Function")
+
       },
       (error) => {
         console.error('Error toggling device state:', error);
       }
     );
   }
-
-  private startSignalRConnection(): void {
+  
+  private startSignalRConnectionWithAzureFunction(): void {
     this.signalRService.startConnection();
     this.signalRService.addMessageListener((message: string) => {
       console.log('Real-time device update:', message);
       this.loadConnectedUser(); // Update the UI when a device state changes
     });
-  }*/
-
+  }
 
 
   deleteHome(): void {

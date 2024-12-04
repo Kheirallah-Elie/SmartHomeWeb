@@ -68,5 +68,5 @@ app.MapControllers();
 app.MapFallbackToFile("/index.html");
 
 
-app.MapHub<DeviceHub>("/deviceHub"); // the SignalR pattern
+app.MapHub<DeviceHub>("/User"); // the SignalR pattern
 app.Run();

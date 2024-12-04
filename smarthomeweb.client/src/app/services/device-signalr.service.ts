@@ -18,8 +18,15 @@ export class SignalRService {
       .withUrl('https://smarthomeapp.azurewebsites.net/api', {
         accessTokenFactory: async () => {
           try {
-            const response = await fetch('https://smarthomeapp.azurewebsites.net/api/Negotiate', { method: 'POST' });
+            const response = await fetch('https://smarthomeapp.azurewebsites.net/api/Negotiate', {
+              method: 'POST',
+            });
             const data = await response.json();
+
+            if (!data || !data.accessToken) {
+              throw new Error("Access token not found in response");
+            }
+            console.log("I'm trying to get in here")
             return data.accessToken; // Retrieve the access token for authentication
           } catch (error) {
             console.error('Error fetching SignalR access token:', error);
@@ -47,7 +54,7 @@ export class SignalRService {
    * Send a command to the Azure Function to be forwarded to the IoT device.
    * @param payload An object containing the device ID and command.
    */
-  sendMessage(payload: { userId: string; homeId: string; roomId: string; deviceId: string; command: string }) {
+  sendMessage(payload: { userId: string; homeId: string; roomId: string; deviceId: string}) {
     fetch('https://smarthomeapp.azurewebsites.net/api/SendToDevice', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
