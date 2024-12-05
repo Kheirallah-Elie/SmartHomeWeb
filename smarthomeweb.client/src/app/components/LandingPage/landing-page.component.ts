@@ -30,7 +30,6 @@ export class LandingPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadConnectedUser(); // Charge l'utilisateur connecté lors de l'initialisation
-    this.startSignalRConnection(); // Establish connection for device updates
     this.startSignalRConnectionWithAzureFunction();
   }
 
@@ -70,21 +69,6 @@ export class LandingPageComponent implements OnInit {
     this.selectedUser = null; // Réinitialise l'utilisateur sélectionné
   }
 
-  private startSignalRConnection(): void { // with self
-    this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7156/User')
-      .build();
-
-    this.hubConnection.start().then(() => {
-      console.log('SignalR connection established');
-    }).catch(err => console.error('Error establishing SignalR connection:', err));
-
-    this.hubConnection.on('DeviceStateChanged', (update) => {
-      console.log('Device state changed:', update);
-      this.loadConnectedUser(); // Recharge les données pour refléter les changements
-    });
-  }
-
   
   // Méthode pour basculer l'état d'un appareil
   toggleDeviceState(homeId: string, roomId: string, deviceId: string): void {
@@ -106,7 +90,7 @@ export class LandingPageComponent implements OnInit {
           userId: this.user.userId,
           homeId: homeId,
           roomId: roomId,
-          deviceId: deviceId
+          deviceId: "123" // For testing, replace with deviceId later, and add the Device ID's into the IOT Hub in the Azure Portal to register them
         });
         console.log("Sending data to Azure Function")
 

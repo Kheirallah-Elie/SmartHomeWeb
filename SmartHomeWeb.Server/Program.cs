@@ -42,6 +42,8 @@ builder.Services.AddSession(options =>
 #endregion
 
 var app = builder.Build();
+app.UseCors();
+app.MapHub<DeviceHub>("/deviceHub"); // the SignalR pattern
 
 
 app.UseDefaultFiles();
@@ -62,11 +64,8 @@ app.UseRouting(); // Ensure UseRouting is before UseCors, UseSession, and UseEnd
 app.UseSession();// Enable sessions
 #endregion
 
-app.UseCors();
 app.UseAuthorization();
 app.MapControllers();
 app.MapFallbackToFile("/index.html");
 
-
-app.MapHub<DeviceHub>("/User"); // the SignalR pattern
 app.Run();

@@ -36,7 +36,7 @@ public class DeviceService
             device.State = !device.State;
             await _userService.UpdateUserAsync(userId, user);
 
-            await _deviceHubContext.Clients.All.SendAsync("DeviceStateChanged", new
+            await _deviceHubContext.Clients.All.SendAsync("ReceiveTelemetry", new
             {
                 UserId = userId,
                 HomeId = homeId,
