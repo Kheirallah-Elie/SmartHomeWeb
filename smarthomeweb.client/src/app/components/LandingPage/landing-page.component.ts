@@ -68,7 +68,6 @@ export class LandingPageComponent implements OnInit {
   closeModal(): void {
     this.selectedUser = null; // Réinitialise l'utilisateur sélectionné
   }
-
   
   // Méthode pour basculer l'état d'un appareil
   toggleDeviceState(homeId: string, roomId: string, deviceId: string): void {

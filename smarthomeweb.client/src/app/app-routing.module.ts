@@ -12,7 +12,7 @@ const routes: Routes = [
   { path: 'users', component: LandingPageComponent }, // Define route for UserListComponent
   { path: 'login', component: LoginComponent }, // New route for LoginComponent
   { path: 'register', component: RegisterComponent }, // New route for RegisterComponent
-  { path: '', redirectTo: '/users', pathMatch: 'full' }, // Redirect to users for now, change to login for later, unless user is already connected
+  { path: '', redirectTo: '/login', pathMatch: 'full' }, // Redirect to users for now, change to login for later, unless user is already connected
   { path: 'add-home', component: AddHomeComponent },
   { path: 'add-room', component: AddRoomComponent },
   { path: 'add-device', component: AddDeviceComponent },

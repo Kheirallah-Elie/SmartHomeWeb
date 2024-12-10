@@ -5,5 +5,23 @@
     <li class="navbar-item"><a routerLink="/add-room" routerLinkActive="active-link"> Add Room</a></li>
     <li class="navbar-item"><a routerLink="/add-device" routerLinkActive="active-link"> Add Device</a></li>
   </ul>
-  <button class="logout-button" (click)="logout()">Logout</button>
+  <!-- Profile -->
+  <div class="profile-container" (click)="toggleProfileModal()">
+    <i class="fas fa-user"></i>
+    <div class="profile-tooltip">{{ userName }}</div>
+  </div>
 </nav>
+
+<!-- Profile Modal Content -->
+<div *ngIf="showProfileModal" class="profile-modal" (click)="toggleProfileModal()">
+  <div class="user-header" (click)="$event.stopPropagation()">
+    <h1>Profile</h1>
+  </div>
+  <div class="modal-content">
+    <p><strong>Name:</strong> {{ userName }}</p>
+    <p><strong>Email:</strong> {{ selectedUser?.email }}</p>
+    <p><strong>Homes:</strong> {{ selectedUser?.homes.length }}</p>
+    <p><strong>Rooms:</strong> {{ totalRooms }}</p>
+    <button class="logout-button" (click)="logout()">Logout</button>
+  </div>
+</div>
