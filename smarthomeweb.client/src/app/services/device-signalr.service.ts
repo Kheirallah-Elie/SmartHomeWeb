@@ -2,9 +2,32 @@ import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
 
+// For testing connection with the Arduino now, message sent succesfully
+const testingPayload = {
+  "homeId": "HomeId001",
+  "topic": "team5",
+  "id": 1,
+  "deviceId": "SmartHome",
+  "rooms": [
+    {
+      "id": 1,
+      "name": "Living Room",
+      "devices": [
+        {
+          "id": 1,
+          "name": "Light",
+          "isOn": false
+        }
+      ]
+    }
+  ]
+};
+
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class SignalRService {
   private hubConnection!: signalR.HubConnection;
   private messageSubject = new BehaviorSubject<string>('');
@@ -54,11 +77,12 @@ export class SignalRService {
    * Send a command to the Azure Function to be forwarded to the IoT device.
    * @param payload An object containing the device ID and command.
    */
-  sendMessage(payload: { userId: string; homeId: string; roomId: string; deviceId: string}) {
+  sendMessage(payload: { userId: string; homeId: string; roomId: string; deviceId: string }) {
+
     fetch('https://smarthomeapp.azurewebsites.net/api/SendToDevice', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload) // Send the payload as a JSON string
+      body: JSON.stringify(testingPayload) // Send the payload as a JSON string
     })
       .then(response => {
         if (!response.ok) {
