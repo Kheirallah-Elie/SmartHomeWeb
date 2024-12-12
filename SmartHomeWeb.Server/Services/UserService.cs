@@ -47,7 +47,7 @@ public class UserService
     {
         // Find the user in the Db. If the user exists and the provided password matches the hashed password
         User user = await _context.Users.Find(u => u.Email == email).FirstOrDefaultAsync();
-        if (user != null && password == user.Password)
+        if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
         {
             Console.WriteLine($"Authentication successful for: {email}");
             return user; // Authentication succeeded
