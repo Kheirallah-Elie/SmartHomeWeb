@@ -2,21 +2,15 @@ import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
 
-// For testing connection with the Arduino now, message sent succesfully
-const testingPayload = {
-  "homeId": "HomeId001",
-  "topic": "team5",
-  "id": 1,
+// To adapt our database to the existing received payload from our web app
+const arduinoJsonStructure = {
   "deviceId": "SmartHome",
   "rooms": [
     {
-      "id": 1,
       "name": "Living Room",
       "devices": [
         {
-          "id": 1,
           "name": "Light",
-          "isOn": false
         }
       ]
     }
@@ -78,11 +72,15 @@ export class SignalRService {
    * @param payload An object containing the device ID and command.
    */
   sendMessage(payload: { userId: string; homeId: string; roomId: string; deviceId: string }) {
-
+    // We are manually replacing the information we need from the payload to the correct JSON structure that expects the data from the Arduino Board
+    arduinoJsonStructure.deviceId = payload.homeId;
+    arduinoJsonStructure.rooms[0].name = payload.roomId;
+    arduinoJsonStructure.rooms[0].devices[0].name = payload.deviceId;
+   
     fetch('https://smarthomeapp.azurewebsites.net/api/SendToDevice', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(testingPayload) // Send the payload as a JSON string
+      body: JSON.stringify(arduinoJsonStructure) // Send the payload as a JSON string
     })
       .then(response => {
         if (!response.ok) {

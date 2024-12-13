@@ -89,7 +89,7 @@ export class LandingPageComponent implements OnInit {
           userId: this.user.userId,
           homeId: homeId,
           roomId: roomId,
-          deviceId: "123" // For testing, replace with deviceId later, and add the Device ID's into the IOT Hub in the Azure Portal to register them
+          deviceId: deviceId
         });
         console.log("Sending data to Azure Function")
 
