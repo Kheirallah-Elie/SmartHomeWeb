@@ -20,6 +20,8 @@ export class LandingPageComponent implements OnInit {
   homeToDeleteId: string | null = null;  // ID de la maison à supprimer
   modalsState: { [homeId: string]: boolean } = {};
 
+  telemetryMessage: string = '';  // Variable to hold the received telemetry message
+
   constructor(
     private userService: UserService,
     private homeService: HomeService,
@@ -31,6 +33,11 @@ export class LandingPageComponent implements OnInit {
   ngOnInit(): void {
     this.loadConnectedUser(); // Charge l'utilisateur connecté lors de l'initialisation
     this.startSignalRConnectionWithAzureFunction();
+
+    // Subscribe to the telemetry messages and update the UI when a new message is received
+    this.signalRService.message$.subscribe((message) => {
+      this.telemetryMessage = message;
+    });
   }
 
   // Méthode pour charger l'utilisateur connecté
@@ -70,35 +77,39 @@ export class LandingPageComponent implements OnInit {
   }
   
   // Méthode pour basculer l'état d'un appareil
-  toggleDeviceState(homeId: string, roomId: string, deviceId: string): void {
+  async toggleDeviceState(homeId: string, roomId: string, deviceId: string): Promise<void> {
 
-    console.log("User ID: " + this.user.userId + "\nHome ID: " + homeId + "\nRoom ID: " + roomId + "\nDevice ID: " + deviceId);
-    // Vérifie que les ID sont définis avant de faire l'appel
     if (!this.user?.userId || !homeId || !roomId || !deviceId) {
       console.error('One or more IDs are undefined:', { userId: this.user?.userId, homeId, roomId, deviceId });
       return;
     }
 
-    // Toggle device state locally
-    this.deviceService.toggleDeviceState(this.user.userId, homeId, roomId, deviceId).subscribe(
-      () => {
-        this.loadConnectedUser(); // Recharge les données de l'utilisateur pour mettre à jour l'état
+    try {
+      // Toggle device state locally
+      await this.deviceService.toggleDeviceState(this.user.userId, homeId, roomId, deviceId).toPromise();
 
-        // Notify the Azure Function of the state change via SignalR
-        this.signalRService.sendMessage({
-          userId: this.user.userId,
-          homeId: homeId,
-          roomId: roomId,
-          deviceId: deviceId
-        });
-        console.log("Sending data to Azure Function")
+      // Get the updated device state
+      const deviceState = await this.getDeviceState(this.user.userId, homeId, roomId, deviceId);
 
-      },
-      (error) => {
-        console.error('Error toggling device state:', error);
-      }
-    );
+      console.log("User ID: " + this.user.userId + "\nHome ID: " + homeId + "\nRoom ID: " + roomId + "\nDevice ID: " + deviceId + "\nDevice state: " + deviceState);
+
+      // Reload user data to refresh the UI
+      this.loadConnectedUser();
+
+      // Notify the Azure Function of the state change via SignalR
+      this.signalRService.sendMessage({
+        userId: this.user.userId,
+        homeId: homeId,
+        roomId: roomId,
+        deviceId: deviceId,
+        deviceState: deviceState,
+      });
+
+    } catch (error) {
+      console.error('Error toggling device state or fetching the updated state:', error);
+    }
   }
+
   
   private startSignalRConnectionWithAzureFunction(): void {
     this.signalRService.startConnection();
@@ -106,6 +117,24 @@ export class LandingPageComponent implements OnInit {
       console.log('Real-time device update:', message);
       this.loadConnectedUser(); // Update the UI when a device state changes
     });
+  }
+
+
+  private getDeviceState(userId: string, homeId: string, roomId: string, deviceId: string): Promise<boolean> {
+    return this.deviceService.getDeviceState(userId, homeId, roomId, deviceId).toPromise()
+      .then(
+        (response) => {
+          if (response && response.state !== undefined) {
+            return response.state;
+          }
+          console.error('Device state is undefined');
+          return false; // Fallback state
+        },
+        (error) => {
+          console.error('Error fetching device state:', error);
+          return false; // Fallback state in case of an error
+        }
+      );
   }
 
 

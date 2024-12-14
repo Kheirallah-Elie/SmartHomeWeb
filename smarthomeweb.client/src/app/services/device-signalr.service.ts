@@ -11,11 +11,67 @@ const arduinoJsonStructure = {
       "devices": [
         {
           "name": "Light",
+          "isOn": false,
         }
       ]
     }
   ]
 };
+
+/* TODO NEXT RECEIVED TELEMETRY FROM IOT HUB on Device toggle from the Arduino, adapt it with our database to toggle a device from the Arduino
+
+Telemetry received:
+{
+  "homeId": "HomeId001",
+  "topic": "team5",
+  "username": "johndoe",
+  "id": 1,
+  "deviceId": "SmartHome",
+  "rooms": [
+    {
+      "id": 1,
+      "name": "Living Room",
+      "devices": [
+        {
+          "id": 1,
+          "name": "Light",
+          "isOn": true,
+          "type": "lighting",
+          "description": "Main ceiling light"
+        },
+        {
+          "id": 2,
+          "name": "Socket",
+          "isOn": false,
+          "type": "socket",
+          "description": "Smart socket"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Kitchen",
+      "devices": [
+        {
+          "id": 1,
+          "name": "Light",
+          "isOn": false,
+          "type": "lighting",
+          "description": "Main ceiling light"
+        },
+        {
+          "id": 2,
+          "name": "Socket",
+          "isOn": false,
+          "type": "socket",
+          "description": "Smart socket"
+        }
+      ]
+    }
+  ]
+}
+
+*/
 
 
 @Injectable({
@@ -71,11 +127,12 @@ export class SignalRService {
    * Send a command to the Azure Function to be forwarded to the IoT device.
    * @param payload An object containing the device ID and command.
    */
-  sendMessage(payload: { userId: string; homeId: string; roomId: string; deviceId: string }) {
+  sendMessage(payload: { userId: string; homeId: string; roomId: string; deviceId: string, deviceState :boolean }) {
     // We are manually replacing the information we need from the payload to the correct JSON structure that expects the data from the Arduino Board
     arduinoJsonStructure.deviceId = payload.homeId;
     arduinoJsonStructure.rooms[0].name = payload.roomId;
     arduinoJsonStructure.rooms[0].devices[0].name = payload.deviceId;
+    arduinoJsonStructure.rooms[0].devices[0].isOn = payload.deviceState;
    
     fetch('https://smarthomeapp.azurewebsites.net/api/SendToDevice', {
       method: 'POST',
@@ -92,11 +149,15 @@ export class SignalRService {
       .catch(error => console.error('Error sending command:', error));
   }
 
+
+
   /**
    * Register a custom message listener for the SignalR connection.
    * @param callback A function to handle incoming messages.
    */
-  addMessageListener(callback: (message: string) => void): void {
-    this.message$.subscribe(callback);
+  addMessageListener(callback: (message: string) => void) {
+    this.hubConnection.on('ReceiveTelemetry', callback);
   }
+
+
 }

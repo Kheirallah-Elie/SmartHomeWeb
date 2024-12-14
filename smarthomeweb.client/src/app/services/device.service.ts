@@ -24,4 +24,9 @@ export class DeviceService {
   toggleDeviceState(userId: string, homeId: string, roomId: string, deviceId: string): Observable<any> {
     return this.http.put<void>(`${this.apiUrl}/${userId}/homes/${homeId}/rooms/${roomId}/devices/${deviceId}/toggle`, {});
   }
+
+  getDeviceState(userId: string, homeId: string, roomId: string, deviceId: string): Observable<{ state: boolean }> {
+    const url = `api/User/${userId}/homes/${homeId}/rooms/${roomId}/devices/${deviceId}/state`;
+    return this.http.get<{ state: boolean }>(url);
+  }
 }

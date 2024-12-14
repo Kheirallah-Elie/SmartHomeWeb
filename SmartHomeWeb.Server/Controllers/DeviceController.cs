@@ -28,6 +28,22 @@ public class DeviceController : ControllerBase
         return NoContent(); // Indique que l'opération a été effectuée avec succès
     }
 
+
+    [HttpGet("{deviceId}/state")]
+    public async Task<IActionResult> GetDeviceState(string userId, string homeId, string roomId, string deviceId)
+    {
+        var deviceState = await _deviceService.GetDeviceStateAsync(userId, homeId, roomId, deviceId);
+
+        if (deviceState == null)
+        {
+            return NotFound(new { Message = "Device not found." });
+        }
+
+        return Ok(new { DeviceId = deviceId, State = deviceState });
+    }
+
+
+
     [HttpDelete("{deviceId}")]
     public async Task<IActionResult> DeleteDevice(string userId, string homeId, string roomId, string deviceId)
     {

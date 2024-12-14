@@ -24,6 +24,20 @@ public class DeviceService
         await _userService.UpdateUserAsync(userId, user);
     }
 
+    public async Task<bool?> GetDeviceStateAsync(string userId, string homeId, string roomId, string deviceId)
+    {
+        // Fetch the user data (assuming a repository or database method is available)
+        var user = await _userService.GetUserByIdAsync(userId);
+        if (user == null) return null;
+
+        // Locate the device in the hierarchy
+        var device = user.Homes.Find(h => h.HomeId == homeId)
+                              ?.Rooms.Find(r => r.RoomId == roomId)
+                              ?.Devices.Find(d => d.DeviceId == deviceId);
+
+        return device?.State; // Return null if not found, otherwise the boolean state
+    }
+
     public async Task ToggleDeviceStateAsync(string userId, string homeId, string roomId, string deviceId)
     {
         var user = await _userService.GetUserByIdAsync(userId);
