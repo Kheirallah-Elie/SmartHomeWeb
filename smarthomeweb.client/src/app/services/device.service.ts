@@ -31,17 +31,17 @@ export class DeviceService {
   }
 
     // Update the state of a specific device in the database
-  updateDeviceState(userId: string, homeId: string, roomName: string, deviceName: string, deviceState: boolean): void {
+  updateDeviceState(userId: string, homeId: string, roomId: string, deviceId: string, deviceState: boolean): void {
     const payload = {
       userId,
       homeId,
-      roomName,
-      deviceName,
+      roomId,
+      deviceId,
       deviceState
     };
     
     // Assuming there's an API endpoint to update the device state
-    this.http.put(`${this.apiUrl}/${userId}/homes/${homeId}/rooms/${roomName}/devices/${deviceName}/state`, payload.deviceState)
+    this.http.put(`${this.apiUrl}/${userId}/homes/${homeId}/rooms/${roomId}/devices/${deviceId}/state`, payload.deviceState)
       .subscribe(
         response => {
           console.log('Device state updated in the database:', response);

@@ -53,10 +53,10 @@ public class DeviceController : ControllerBase
 
     // Update the state of a device
     [HttpPut("{deviceId}/state")]
-    public async Task<IActionResult> UpdateDeviceState(string userId, string homeId, string roomName, string deviceId, [FromBody] Device request)
+    public async Task<IActionResult> UpdateDeviceState(string userId, string homeId, string roomId, string deviceId, Boolean isOn)
     {
         // Validate the device and update its state
-        var success = await _deviceService.UpdateDeviceStateAsync(userId, homeId, roomName, deviceId, request.State);
+        var success = await _deviceService.UpdateDeviceStateAsync(userId, homeId, roomId, deviceId, isOn);
 
         if (success)
         {

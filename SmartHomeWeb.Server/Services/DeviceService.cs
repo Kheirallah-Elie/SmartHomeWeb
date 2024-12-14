@@ -72,11 +72,11 @@ public class DeviceService
     }
 
     // Update the state of the device
-    public async Task<bool> UpdateDeviceStateAsync(string userId, string homeId, string roomName, string deviceId, bool deviceState)
+    public async Task<bool> UpdateDeviceStateAsync(string userId, string homeId, string roomId, string deviceId, Boolean deviceState)
     {
         var user = await _userService.GetUserByIdAsync(userId);
         var home = user.Homes.Find(h => h.HomeId == homeId);
-        var room = home?.Rooms.Find(r => r.RoomId == roomName);
+        var room = home?.Rooms.Find(r => r.RoomId == roomId);
         var device = room?.Devices.Find(d => d.DeviceId == deviceId);
 
         if (device != null)

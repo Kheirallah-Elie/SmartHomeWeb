@@ -8,10 +8,10 @@ const arduinoJsonStructure = {
   "deviceId": "SmartHome",
   "rooms": [
     {
-      "name": "Living Room",
+      "id":"1",
       "devices": [
         {
-          "name": "Light",
+          "id": "1",
           "isOn": false,
         }
       ]
@@ -20,12 +20,12 @@ const arduinoJsonStructure = {
 };
 
 interface Device {
-  name: string;
+  id: string;
   isOn: boolean;
 }
 
 interface Room {
-  name: string;
+  id: string;
   devices: Device[];
 }
 
@@ -88,7 +88,6 @@ Telemetry received:
 }
 
 */
-
 
 @Injectable({
   providedIn: 'root'
@@ -170,14 +169,14 @@ export class SignalRService {
         }
 
         room.devices.forEach((device: Device) => {
-          const { name: deviceName, isOn } = device;
+          const { id: id, isOn } = device;
 
           // Call the device service to update the device state in the database
-          this.deviceService.updateDeviceState(userId, deviceId, room.name, device.name, isOn);
+          this.deviceService.updateDeviceState(userId, deviceId, room.id, device.id, isOn);
         });
       });
     } catch (error) {
-      console.error('Error processing telemetry message:', error);
+      //console.error('Error processing telemetry message:', error);
     }
   }
 
@@ -190,8 +189,8 @@ export class SignalRService {
   sendMessage(payload: { userId: string; homeId: string; roomId: string; deviceId: string, deviceState :boolean }) {
     // We are manually replacing the information we need from the payload to the correct JSON structure that expects the data from the Arduino Board
     arduinoJsonStructure.deviceId = payload.homeId;
-    arduinoJsonStructure.rooms[0].name = payload.roomId;
-    arduinoJsonStructure.rooms[0].devices[0].name = payload.deviceId;
+    arduinoJsonStructure.rooms[0].id = payload.roomId;
+    arduinoJsonStructure.rooms[0].devices[0].id = payload.deviceId;
     arduinoJsonStructure.rooms[0].devices[0].isOn = payload.deviceState;
    
     fetch('https://smarthomeapp.azurewebsites.net/api/SendToDevice', {
@@ -209,8 +208,6 @@ export class SignalRService {
       .catch(error => console.error('Error sending command:', error));
   }
 
-
-
   /**
    * Register a custom message listener for the SignalR connection.
    * @param callback A function to handle incoming messages.
@@ -218,6 +215,4 @@ export class SignalRService {
   addMessageListener(callback: (message: string) => void) {
     this.hubConnection.on('ReceiveTelemetry', callback);
   }
-
-
 }
