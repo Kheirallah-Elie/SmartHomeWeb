@@ -336,6 +336,7 @@ body {
   list-style: none;
   margin: 0;
   padding: 0;
+  align-items: center; /* Correction pour aligner verticalement */
 }
 
 /* Liens de navigation */
@@ -348,6 +349,8 @@ body {
   padding: 5px 10px;
   border-radius: 4px;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center; /* Correction pour aligner texte et icône */
 }
 
   .navbar-item a:hover {
@@ -371,6 +374,55 @@ body {
     width: 100%;
   }
 
+/* Dropdown */
+.navbar-item.dropdown {
+  position: relative;
+}
+
+.navbar-item .dropdown-toggle {
+  cursor: pointer;
+  display: flex;
+  align-items: center; /* Correction d'alignement pour dropdown */
+}
+
+  .navbar-item .dropdown-toggle i {
+    margin-left: 8px;
+  }
+
+.navbar-item .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: none;
+}
+
+  .navbar-item .dropdown-menu li {
+    padding: 8px 20px;
+  }
+
+    .navbar-item .dropdown-menu li a {
+      text-decoration: none;
+      color: #333;
+      font-size: 16px;
+    }
+
+    .navbar-item .dropdown-menu li:hover {
+      background-color: #f0f0f0;
+    }
+
+/* Show dropdown */
+.navbar-item.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
 /* Bouton Logout */
 .logout-button {
   background: linear-gradient(90deg, #ff6b6b, #c0392b);
@@ -389,12 +441,6 @@ body {
     box-shadow: 0 8px 15px rgba(255, 107, 107, 0.5);
   }
 
-/* Icônes dans les liens */
-.navbar-item a span {
-  margin-right: 8px;
-  font-size: 18px;
-  display: inline-block;
-}
 
 /* Style global pour le conteneur du message de bienvenue */
 .welcome-container {

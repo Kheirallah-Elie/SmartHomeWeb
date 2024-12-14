@@ -13,6 +13,8 @@ export class HeaderPageComponent implements OnInit {
   showProfileModal: boolean = false;
   selectedUser: any = null; // For selected user modal
   totalRooms: number = 0;
+  showDropdown: boolean = false; // For dropdown visibility
+
 
   constructor(private userService: UserService, private router: Router) { }
 
@@ -24,6 +26,10 @@ export class HeaderPageComponent implements OnInit {
           this.userName = user.email.split('@')[0]; // Extract username from email
         });
       }
+  }
+
+  toggleDropdown(state: boolean): void {
+    this.showDropdown = state;
   }
 
   openModal(user: any): void {
