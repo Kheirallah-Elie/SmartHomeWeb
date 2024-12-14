@@ -112,9 +112,8 @@ export class LandingPageComponent implements OnInit {
 
   
   private startSignalRConnectionWithAzureFunction(): void {
-    this.signalRService.startConnection();
+    this.signalRService.startConnection("675cadd7ac30c2e22ce93352"); // testing with the Helb userID
     this.signalRService.addMessageListener((message: string) => {
-      console.log('Real-time device update:', message);
       this.loadConnectedUser(); // Update the UI when a device state changes
     });
   }

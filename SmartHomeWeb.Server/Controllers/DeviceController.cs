@@ -50,4 +50,21 @@ public class DeviceController : ControllerBase
         await _deviceService.DeleteDeviceAsync(userId, homeId, roomId, deviceId);
         return NoContent(); // Indique que l'appareil a été supprimé avec succès
     }
+
+    // Update the state of a device
+    [HttpPut("{deviceId}/state")]
+    public async Task<IActionResult> UpdateDeviceState(string userId, string homeId, string roomName, string deviceId, [FromBody] Device request)
+    {
+        // Validate the device and update its state
+        var success = await _deviceService.UpdateDeviceStateAsync(userId, homeId, roomName, deviceId, request.State);
+
+        if (success)
+        {
+            return Ok(new { message = "Device state updated successfully." });
+        }
+        else
+        {
+            return NotFound(new { message = "Device not found." });
+        }
+    }
 }

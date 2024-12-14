@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
+import { DeviceService } from '../services/device.service'
 
 // To adapt our database to the existing received payload from our web app
 const arduinoJsonStructure = {
@@ -18,6 +19,21 @@ const arduinoJsonStructure = {
   ]
 };
 
+interface Device {
+  name: string;
+  isOn: boolean;
+}
+
+interface Room {
+  name: string;
+  devices: Device[];
+}
+
+interface TelemetryData {
+  deviceId: string;
+  rooms: Room[];
+}
+
 /* TODO NEXT RECEIVED TELEMETRY FROM IOT HUB on Device toggle from the Arduino, adapt it with our database to toggle a device from the Arduino
 
 Telemetry received:
@@ -26,23 +42,23 @@ Telemetry received:
   "topic": "team5",
   "username": "johndoe",
   "id": 1,
-  "deviceId": "SmartHome",
+  "deviceId": "SmartHome", // I want this
   "rooms": [
     {
       "id": 1,
-      "name": "Living Room",
+      "name": "Living Room", // I want this
       "devices": [
         {
           "id": 1,
-          "name": "Light",
-          "isOn": true,
+          "name": "Light", // I want this
+          "isOn": true, // I want this
           "type": "lighting",
           "description": "Main ceiling light"
         },
         {
           "id": 2,
-          "name": "Socket",
-          "isOn": false,
+          "name": "Socket", // I want this
+          "isOn": false, // I want this
           "type": "socket",
           "description": "Smart socket"
         }
@@ -50,19 +66,19 @@ Telemetry received:
     },
     {
       "id": 2,
-      "name": "Kitchen",
+      "name": "Kitchen", // I want this 
       "devices": [
         {
           "id": 1,
-          "name": "Light",
-          "isOn": false,
+          "name": "Light", // I want this
+          "isOn": false, // I want this
           "type": "lighting",
           "description": "Main ceiling light"
         },
         {
           "id": 2,
-          "name": "Socket",
-          "isOn": false,
+          "name": "Socket", // I want this
+          "isOn": false, // I want this
           "type": "socket",
           "description": "Smart socket"
         }
@@ -79,6 +95,10 @@ Telemetry received:
 })
 
 export class SignalRService {
+
+  constructor(private deviceService: DeviceService) { }
+
+
   private hubConnection!: signalR.HubConnection;
   private messageSubject = new BehaviorSubject<string>('');
   message$ = this.messageSubject.asObservable();
@@ -86,7 +106,7 @@ export class SignalRService {
   /**
    * Start the SignalR connection with Azure SignalR Service.
    */
-  startConnection(): void {
+  startConnection(userId : string): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl('https://smarthomeapp.azurewebsites.net/api', {
         accessTokenFactory: async () => {
@@ -99,7 +119,6 @@ export class SignalRService {
             if (!data || !data.accessToken) {
               throw new Error("Access token not found in response");
             }
-            console.log("I'm trying to get in here")
             return data.accessToken; // Retrieve the access token for authentication
           } catch (error) {
             console.error('Error fetching SignalR access token:', error);
@@ -117,11 +136,52 @@ export class SignalRService {
       .catch(err => console.error('Error starting SignalR connection:', err));
 
     // Register a listener for receiving telemetry messages
+    // Register a listener for receiving telemetry messages
     this.hubConnection.on('ReceiveTelemetry', (message: string) => {
-      console.log('Telemetry received:', message);
       this.messageSubject.next(message); // Update the observable with the received message
+      this.handleTelemetry(userId, message); // Call the function to handle the telemetry and update the device state
     });
   }
+
+  /**
+ * Handle received telemetry and update the database
+ * @param message The received telemetry message.
+ */
+  handleTelemetry(userId: string, message: string): void {
+    try {
+      // Check if message is a string and needs parsing
+      const telemetryData: TelemetryData = (typeof message === 'string') ? JSON.parse(message) : message;
+
+      // Log the parsed telemetryData to verify structure
+      console.log('Received telemetry data:', telemetryData);
+
+      const { deviceId, rooms } = telemetryData;
+
+      // exit if nothing is received
+      if (!rooms) {
+        return;
+      }
+
+      // Iterate over rooms and devices to update their state
+      rooms.forEach((room: Room) => {
+        // Check if devices is undefined or null
+        if (!room.devices) {
+          return;
+        }
+
+        room.devices.forEach((device: Device) => {
+          const { name: deviceName, isOn } = device;
+
+          // Call the device service to update the device state in the database
+          this.deviceService.updateDeviceState(userId, deviceId, room.name, device.name, isOn);
+        });
+      });
+    } catch (error) {
+      console.error('Error processing telemetry message:', error);
+    }
+  }
+
+
 
   /**
    * Send a command to the Azure Function to be forwarded to the IoT device.
