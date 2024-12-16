@@ -5,14 +5,22 @@ import { DeviceService } from '../services/device.service'
 
 // To adapt our database to the existing received payload from our web app
 const arduinoJsonStructure = {
+  "homeId": "HomeId001",
+  "topic": "team5",
+  "username": "johndoe",
+  "id": 1,
   "deviceId": "SmartHome",
   "rooms": [
     {
-      "id":"1",
+      "id": 1,
+      "name": "",
       "devices": [
         {
-          "id": "1",
+          "id": 1,
+          "name": "",
           "isOn": false,
+          "type": "",
+          "description": ""
         }
       ]
     }
@@ -34,61 +42,6 @@ interface TelemetryData {
   rooms: Room[];
 }
 
-/* TODO NEXT RECEIVED TELEMETRY FROM IOT HUB on Device toggle from the Arduino, adapt it with our database to toggle a device from the Arduino
-
-Telemetry received:
-{
-  "homeId": "HomeId001",
-  "topic": "team5",
-  "username": "johndoe",
-  "id": 1,
-  "deviceId": "SmartHome", // I want this
-  "rooms": [
-    {
-      "id": 1,
-      "name": "Living Room", // I want this
-      "devices": [
-        {
-          "id": 1,
-          "name": "Light", // I want this
-          "isOn": true, // I want this
-          "type": "lighting",
-          "description": "Main ceiling light"
-        },
-        {
-          "id": 2,
-          "name": "Socket", // I want this
-          "isOn": false, // I want this
-          "type": "socket",
-          "description": "Smart socket"
-        }
-      ]
-    },
-    {
-      "id": 2,
-      "name": "Kitchen", // I want this 
-      "devices": [
-        {
-          "id": 1,
-          "name": "Light", // I want this
-          "isOn": false, // I want this
-          "type": "lighting",
-          "description": "Main ceiling light"
-        },
-        {
-          "id": 2,
-          "name": "Socket", // I want this
-          "isOn": false, // I want this
-          "type": "socket",
-          "description": "Smart socket"
-        }
-      ]
-    }
-  ]
-}
-
-*/
-
 @Injectable({
   providedIn: 'root'
 })
@@ -96,7 +49,6 @@ Telemetry received:
 export class SignalRService {
 
   constructor(private deviceService: DeviceService) { }
-
 
   private hubConnection!: signalR.HubConnection;
   private messageSubject = new BehaviorSubject<string>('');
@@ -143,9 +95,9 @@ export class SignalRService {
   }
 
   /**
- * Handle received telemetry and update the database
- * @param message The received telemetry message.
- */
+   * Handle received telemetry and update the database
+   * @param message The received telemetry message.
+   */
   handleTelemetry(userId: string, message: string): void {
     try {
       // Check if message is a string and needs parsing
@@ -156,31 +108,34 @@ export class SignalRService {
 
       const { deviceId, rooms } = telemetryData;
 
-      // exit if nothing is received
-      if (!rooms) {
+      // Exit if no rooms are received
+      if (!rooms || !Array.isArray(rooms)) {
         return;
       }
 
       // Iterate over rooms and devices to update their state
       rooms.forEach((room: Room) => {
-        // Check if devices is undefined or null
-        if (!room.devices) {
-          return;
-        }
+        // Ensure room.id is converted to a string
+        const roomId: string = room.id !== undefined && room.id !== null ? String(room.id) : '';
 
         room.devices.forEach((device: Device) => {
-          const { id: id, isOn } = device;
+          // Ensure device.id is converted to a string
+          const deviceId: string = device.id !== undefined && device.id !== null ? String(device.id) : '';
+          const { isOn } = device;
 
-          // Call the device service to update the device state in the database
-          this.deviceService.updateDeviceState(userId, deviceId, room.id, device.id, isOn);
+          // Validate that roomId and deviceId are valid strings
+          if (roomId && deviceId) {
+            // Call the device service to update the device state in the database
+            this.deviceService.updateDeviceState(userId, "SmartHome", roomId, deviceId, isOn);
+          } else {
+            console.warn(`Invalid room or device ID. Skipping update for room: ${roomId}, device: ${deviceId}`);
+          }
         });
       });
     } catch (error) {
-      //console.error('Error processing telemetry message:', error);
+      console.error('Error processing telemetry message:', error);
     }
   }
-
-
 
   /**
    * Send a command to the Azure Function to be forwarded to the IoT device.
@@ -189,8 +144,8 @@ export class SignalRService {
   sendMessage(payload: { userId: string; homeId: string; roomId: string; deviceId: string, deviceState :boolean }) {
     // We are manually replacing the information we need from the payload to the correct JSON structure that expects the data from the Arduino Board
     arduinoJsonStructure.deviceId = payload.homeId;
-    arduinoJsonStructure.rooms[0].id = payload.roomId;
-    arduinoJsonStructure.rooms[0].devices[0].id = payload.deviceId;
+    arduinoJsonStructure.rooms[0].id = parseInt(payload.roomId);
+    arduinoJsonStructure.rooms[0].devices[0].id = parseInt(payload.deviceId); // MAKE SURE ID'S ARE PARSEABLE INTO INT
     arduinoJsonStructure.rooms[0].devices[0].isOn = payload.deviceState;
    
     fetch('https://smarthomeapp.azurewebsites.net/api/SendToDevice', {
