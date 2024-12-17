@@ -57,7 +57,7 @@ export class SignalRService {
   /**
    * Start the SignalR connection with Azure SignalR Service.
    */
-  startConnection(userId : string): void {
+  startConnection(userId: string): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl('https://smarthomeapp.azurewebsites.net/api', {
         accessTokenFactory: async () => {
@@ -127,6 +127,8 @@ export class SignalRService {
           if (roomId && deviceId) {
             // Call the device service to update the device state in the database
             this.deviceService.updateDeviceState(userId, "SmartHome", roomId, deviceId, isOn);
+            this.updateSignalR(userId, "SmartHome", roomId, deviceId, isOn);
+
           } else {
             console.warn(`Invalid room or device ID. Skipping update for room: ${roomId}, device: ${deviceId}`);
           }
@@ -141,13 +143,13 @@ export class SignalRService {
    * Send a command to the Azure Function to be forwarded to the IoT device.
    * @param payload An object containing the device ID and command.
    */
-  sendMessage(payload: { userId: string; homeId: string; roomId: string; deviceId: string, deviceState :boolean }) {
+  sendMessage(payload: { userId: string; homeId: string; roomId: string; deviceId: string, deviceState: boolean }) {
     // We are manually replacing the information we need from the payload to the correct JSON structure that expects the data from the Arduino Board
     arduinoJsonStructure.deviceId = payload.homeId;
     arduinoJsonStructure.rooms[0].id = parseInt(payload.roomId);
     arduinoJsonStructure.rooms[0].devices[0].id = parseInt(payload.deviceId); // MAKE SURE ID'S ARE PARSEABLE INTO INT
     arduinoJsonStructure.rooms[0].devices[0].isOn = payload.deviceState;
-   
+
     fetch('https://smarthomeapp.azurewebsites.net/api/SendToDevice', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -170,4 +172,17 @@ export class SignalRService {
   addMessageListener(callback: (message: string) => void) {
     this.hubConnection.on('ReceiveTelemetry', callback);
   }
+
+  updateSignalR(userId: string, homeId: string, roomId: string, deviceId: string, deviceState: boolean): void {
+    const payload = {
+      userId: userId,
+      homeId: homeId,
+      roomId: roomId,
+      deviceId: deviceId,
+      deviceState: deviceState
+    };
+
+    this.sendMessage(payload); // Call the existing sendMessage method
+  }
+
 }

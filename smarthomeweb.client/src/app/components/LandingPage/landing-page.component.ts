@@ -75,7 +75,7 @@ export class LandingPageComponent implements OnInit {
   closeModal(): void {
     this.selectedUser = null; // Réinitialise l'utilisateur sélectionné
   }
-  
+
   // Méthode pour basculer l'état d'un appareil
   async toggleDeviceState(homeId: string, roomId: string, deviceId: string): Promise<void> {
 
@@ -96,21 +96,18 @@ export class LandingPageComponent implements OnInit {
       // Reload user data to refresh the UI
       this.loadConnectedUser();
 
-      // Notify the Azure Function of the state change via SignalR
-      this.signalRService.sendMessage({
-        userId: this.user.userId,
-        homeId: homeId,
-        roomId: roomId,
-        deviceId: deviceId,
-        deviceState: deviceState,
-      });
+      this.updateSignalR(this.user.userId, homeId, roomId, deviceId, deviceState);
 
     } catch (error) {
       console.error('Error toggling device state or fetching the updated state:', error);
     }
   }
 
-  
+  public updateSignalR(userId: string, homeId: string, roomId: string, deviceId: string, deviceState: boolean): void {
+    this.signalRService.updateSignalR(userId, homeId, roomId, deviceId, deviceState); // Delegate to the service
+  }
+
+
   private startSignalRConnectionWithAzureFunction(): void {
     this.signalRService.startConnection("675cadd7ac30c2e22ce93352"); // testing with the Helb userID
     this.signalRService.addMessageListener((message: string) => {
