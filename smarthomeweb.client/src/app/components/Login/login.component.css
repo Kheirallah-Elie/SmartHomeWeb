@@ -1,0 +1,62 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f8ff; /* Light background for contrast */
+  color: #333; /* Dark text for readability */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.register-container, .login-container {
+  background-color: #ffffff; /* White background for the form */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  padding: 20px;
+  width: 400px; /* Fixed width for better layout */
+  text-align: center; /* Center align text */
+}
+
+h2 {
+  color: #007bff; /* Eye-catching blue for the title */
+  margin-bottom: 20px; /* Space below the title */
+}
+
+label {
+  display: block; /* Stack labels and inputs */
+  margin-bottom: 5px; /* Space below labels */
+  text-align: left; /* Align labels to the left */
+}
+
+input[type="email"], input[type="password"] {
+  width: 90%; /* Full width for inputs */
+  padding: 8px; /* Space inside inputs */
+  margin-bottom: 10px; /* Space below inputs */
+  border: 1px solid #007bff; /* Blue border */
+  border-radius: 4px; /* Rounded edges for inputs */
+  font-size: 16px; /* Larger font size for inputs */
+}
+
+button {
+  background-color: #007bff; /* Blue background for the button */
+  color: white; /* White text on the button */
+  border: none; /* No border */
+  border-radius: 4px; /* Rounded edges for the button */
+  padding: 10px; /* Space inside the button */
+  font-size: 16px; /* Larger font size for the button */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s; /* Smooth transition */
+}
+
+  button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+
+.error-message {
+  color: red; /* Red color for error messages */
+}
+
+.success-message {
+  color: green; /* Green color for success messages */
+}

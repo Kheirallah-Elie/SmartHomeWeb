@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.1184077">
+﻿<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.1184077">
   <PropertyGroup>
     <StartupCommand>npm start</StartupCommand>
     <JavaScriptTestFramework>Jasmine</JavaScriptTestFramework>
@@ -7,4 +7,11 @@
     <!-- Folder where production build objects will be placed -->
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\smarthomeweb.client\browser\</BuildOutputFolder>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="public\NewFolder\**" />
+    <TypeScriptConfiguration Remove="public\NewFolder\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\app\Assets\" />
+  </ItemGroup>
 </Project>

@@ -1,0 +1,32 @@
+<header-tab></header-tab>
+
+
+<div class="add-data-container">
+  <h2 class="section-title">Add Home</h2>
+  <!-- Message d'alerte -->
+  <div *ngIf="showAlert" class="alert alert-success">
+    Home successfully added !
+  </div>
+  <form (ngSubmit)="addHome()" class="form">
+    <input type="text"
+           id="homeName"
+           [(ngModel)]="home.name"
+           name="homeName"
+           class="form-input"
+           required
+           placeholder="Enter the home name" />
+    <input type="text"
+           id="homeAddress"
+           [(ngModel)]="home.address"
+           name="homeAddress"
+           class="form-input"
+           required
+           placeholder="Enter the home address" />
+    <!-- Bouton désactivé si les champs sont vides -->
+    <button type="submit" class="form-button" [disabled]="!home.name || !home.address">
+      Add Home
+    </button>
+  </form>
+</div>
+
+

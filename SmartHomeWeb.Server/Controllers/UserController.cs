@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using MongoDB.Bson;
 
 [Route("api/[controller]")]
@@ -32,18 +31,56 @@ public class UserController : ControllerBase
     {
         user.UserId = ObjectId.GenerateNewId().ToString();
         user.Homes = new List<Home>(); // Initialize with an empty list
+        //#region CHANGES - Encrypt the Password
+        //user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password); // Not necessary for the moment
+        //#endregion
         await _userService.CreateUserAsync(user);
         return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, user);
     }
 
 
-
+    #region CHANGES
     [HttpPost("login")]
-    public async Task<IActionResult> Login(string email, string password)
+    public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
     {
-        var user = await _userService.AuthenticateAsync(email, password);
-        return user == null ? Unauthorized("Invalid credentials") : Ok(user);
+        Console.WriteLine($"Login attempt for: {loginRequest.Email}");
+
+        var user = await _userService.AuthenticateAsync(loginRequest.Email, loginRequest.Password);
+        if (user == null)
+        {
+            Console.WriteLine("Login failed: Invalid credentials");
+            return Unauthorized(new { message = "Invalid credentials. Please check your email and password." });
+        }
+
+        // Store user ID in session upon successful login
+        HttpContext.Session.SetString("UserId", user.UserId);
+
+        // Renvoyer l'ID avec un message de succès
+        return Ok(new { message = "Login successful", userId = user.UserId });
     }
+    #endregion
+
+    #region
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        // Clear session data to log out the user
+        HttpContext.Session.Clear();
+        return Ok(new { message = "Logout successful" });
+    }
+    #endregion
+
+
+    #region
+    [HttpGet("isAuthenticated")] 
+    // Check if the user is authenticated
+    public IActionResult IsAuthenticated()
+    {
+        // Check if session contains user ID
+        bool isAuthenticated = HttpContext.Session.GetString("UserId") != null;
+        return Ok(isAuthenticated);
+    }
+    #endregion
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(string id, User updatedUser)
@@ -59,3 +96,11 @@ public class UserController : ControllerBase
         return user == null ? NotFound() : NoContent();
     }
 }
+
+#region
+public class LoginRequest
+{
+    public string Email { get; set; }
+    public string Password { get; set; }
+}
+#endregion

@@ -1,0 +1,60 @@
+<header-tab></header-tab>
+
+<!-- Message de bienvenue -->
+<div *ngIf="user" class="welcome-container">
+  <div class="welcome-message">
+    <h1>Welcome back, <span class="user-name">{{ user?.email }}</span>!</h1>
+    <p class="welcome-subtext">We're excited to have you back. Explore your homes and manage your devices with ease.</p>
+  </div>
+</div>
+
+<div *ngIf="user" class="dashboard-container">
+  <div class="home-container">
+    <div *ngFor="let home of user.homes" class="home-card">
+      <h2 class="home-nickname">
+        <i class="fas fa-home"></i> {{ home.nickname }}
+      </h2>
+
+      <!-- Bouton de suppression de la maison -->
+      <button class="delete-home-button" (click)="openConfirmationModal(home.homeId)">
+        <span class="delete-icon">
+          <i class="fas fa-trash-alt"></i>
+        </span>
+      </button>
+
+      <!-- Modale de confirmation -->
+      <div class="confirmation-modal" *ngIf="modalsState[home.homeId]">
+        <div class="modal-content">
+          <h3>Are you sure you want to delete this home?</h3>
+          <div class="modal-actions">
+            <button class="confirm-button" (click)="deleteHome()">Yes</button>
+            <button class="cancel-button" (click)="closeConfirmationModal(home.homeId)">No</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rooms-container">
+        <div *ngFor="let room of home.rooms" class="room-card">
+          <h3 class="room-name">
+            <i class="fas fa-couch"></i> {{ room.name }}
+          </h3>
+          <ul class="device-list">
+            <li *ngFor="let device of room.devices" class="device-item">
+              <div class="device-info">
+                <span class="device-description">
+                  <i class="fas fa-plug"></i> <strong>{{ device.description }}</strong>
+                </span>
+                <!-- <span class="device-id">ID: {{ device.deviceId }}</span> -->
+              </div>
+              <button class="toggle-button"
+                      [ngClass]="{'on-button': device.state, 'off-button': !device.state}"
+                      (click)="toggleDeviceState(home.homeId, room.roomId, device.deviceId)">
+                <i class="fas" [ngClass]="device.state ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

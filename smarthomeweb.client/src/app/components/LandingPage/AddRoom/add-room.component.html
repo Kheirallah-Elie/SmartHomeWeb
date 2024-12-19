@@ -1,0 +1,31 @@
+<header-tab></header-tab>
+
+<div class="add-data-container">
+
+  <h2 class="section-title">Add Room</h2>
+  <div *ngIf="showAlert" class="alert alert-success">
+    Room successfully added !
+  </div>
+  <form (ngSubmit)="addRoom()" class="form">
+    <input type="text"
+           id="roomName"
+           [(ngModel)]="room.name"
+           name="roomName"
+           class="form-input"
+           required
+           placeholder="Enter the room name" />
+
+    <select id="homeId"
+            [(ngModel)]="room.homeId"
+            name="homeId"
+            class="form-input"
+            required>
+      <option value="" disabled selected>Select Home</option>
+      <option *ngFor="let home of homes" [value]="home.homeId">{{ home.nickname }}</option>
+    </select>
+
+    <button type="submit" class="form-button" [disabled]="!room.name || !room.homeId">
+      Add Room
+    </button>
+  </form>
+</div>

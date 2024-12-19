@@ -1,5 +1,4 @@
 ﻿using MongoDB.Driver;
-using Microsoft.Extensions.Configuration;
 
 public class MongoDBContext
 {

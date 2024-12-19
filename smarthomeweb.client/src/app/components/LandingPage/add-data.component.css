@@ -1,0 +1,212 @@
+/* Conteneur principal */
+/* Conteneur Principal */
+.add-data-container {
+  max-width: 600px;
+  width: 90%; /* Ajuste la largeur pour s'adapter aux petits écrans */
+  margin: 0 auto;
+  padding: 30px 20px;
+  background: linear-gradient(to bottom right, #ffffff, #f1f5f9);
+  border-radius: 12px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin-top: 100px;
+}
+
+/* Page entière (corps du document) */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Assure que le parent occupe toute la fenêtre */
+  display: flex;
+  justify-content: center; /* Centre horizontalement */
+  align-items: center; /* Centre verticalement */
+  background: linear-gradient(to top right, #007bff, #0056b3); /* Arrière-plan moderne */
+  color: #333;
+}
+
+/* Titre de Section */
+.section-title {
+  font-size: 2rem;
+  color: #0056b3;
+  margin-bottom: 25px;
+  font-weight: bold;
+}
+
+/* Formulaire */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+/* Champs de saisie */
+.form-input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  font-size: 1em;
+  width: 80%;
+  transition: all 0.3s ease;
+}
+
+  .form-input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.5);
+  }
+/* Pour élargir le select dans le form */
+#homeId, #roomId {
+  width: 85%;
+}
+
+/* Bouton */
+.form-button {
+  background: linear-gradient(to right, #007bff, #0056b3);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 50%;
+}
+
+  .form-button:hover {
+    background: linear-gradient(to right, #0056b3, #003d82);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  .form-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: #666;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .add-data-container {
+    padding: 20px;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .form-input {
+    width: 90%;
+  }
+
+  .form-button {
+    width: 70%;
+  }
+}
+
+
+/* Message d'état du dispositif */
+.device-state-message {
+  font-size: 1.1em;
+  margin-top: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+  .device-state-message strong {
+    color: #4caf50; /* Vert pour 'On' */
+  }
+
+/* Case à cocher */
+input[type="checkbox"] {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+  input[type="checkbox"]:checked {
+    background-color: #4caf50;
+  }
+
+/* Message d'état du dispositif */
+.device-state-message {
+  font-size: 1.1em;
+  margin-top: 5px;
+  transition: color 0.3s ease;
+}
+
+  /* Message lorsque le dispositif est "On" (Vert) */
+  .device-state-message.on {
+    color: #4caf50; /* Vert */
+  }
+
+  /* Message lorsque le dispositif est "Off" (Rouge) */
+  .device-state-message.off {
+    color: #f44336; /* Rouge */
+  }
+
+/* Barre de navigation */
+.navbar {
+  margin-bottom: 20px; /* Ajoute un espace sous la barre de navigation */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #4a90e2;
+  padding: 10px 20px;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Liens de navigation */
+.navbar-list {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-item a {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+  .navbar-item a:hover,
+  .navbar-item a.active-link {
+    color: #ffdd57;
+    font-weight: bold;
+  }
+
+/* Bouton Logout */
+.logout-button {
+  background-color: #ff5c5c;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+  .logout-button:hover {
+    background-color: #ff3b3b;
+  }
+
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.alert-success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+
