@@ -20,7 +20,7 @@ export interface Room {
   providedIn: 'root',
 })
 export class HomeService {
-  private apiUrl = 'https://localhost:7156/api/User';
+  private apiUrl = 'https://web-app-t5-dev-aca2dahff0bkb5g9.westeurope-01.azurewebsites.net/api/User';
 
   constructor(private http: HttpClient) { }
 

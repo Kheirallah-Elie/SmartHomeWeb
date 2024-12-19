@@ -37,6 +37,7 @@ export class LandingPageComponent implements OnInit {
     // Subscribe to the telemetry messages and update the UI when a new message is received
     this.signalRService.message$.subscribe((message) => {
       this.telemetryMessage = message;
+      this.loadConnectedUser();
     });
   }
 
@@ -93,18 +94,14 @@ export class LandingPageComponent implements OnInit {
 
       console.log("User ID: " + this.user.userId + "\nHome ID: " + homeId + "\nRoom ID: " + roomId + "\nDevice ID: " + deviceId + "\nDevice state: " + deviceState);
 
+
+      this.signalRService.updateSignalR(this.user.userId, homeId, roomId, deviceId, deviceState);
       // Reload user data to refresh the UI
       this.loadConnectedUser();
-
-      this.updateSignalR(this.user.userId, homeId, roomId, deviceId, deviceState);
 
     } catch (error) {
       console.error('Error toggling device state or fetching the updated state:', error);
     }
-  }
-
-  public updateSignalR(userId: string, homeId: string, roomId: string, deviceId: string, deviceState: boolean): void {
-    this.signalRService.updateSignalR(userId, homeId, roomId, deviceId, deviceState); // Delegate to the service
   }
 
 

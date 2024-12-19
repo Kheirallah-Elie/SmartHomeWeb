@@ -13,8 +13,8 @@ export interface Device {
   providedIn: 'root',
 })
 export class DeviceService {
-  private apiUrl = 'https://localhost:7156/api/User';
-
+  private apiUrl = 'https://web-app-t5-dev-aca2dahff0bkb5g9.westeurope-01.azurewebsites.net/api/User';
+  
   constructor(private http: HttpClient) { }
 
   addDevice(userId: string, homeId: string, roomId: string, device: Device): Observable<any> {
@@ -50,6 +50,22 @@ export class DeviceService {
           console.error('Error updating device state:', error);
         }
       );
+
   }
+
+updateDevicesInBatch(payload: {
+  userId: string,
+  homeId: string,
+  rooms: {
+    roomId: string,
+    devices: {
+      deviceId: string,
+      state: boolean,
+      description?: string
+    }[]
+  }[]
+}): Observable<any> {
+  return this.http.put(`${this.apiUrl}/${payload.userId}/homes/${payload.homeId}/rooms/devices/batch`, payload);
+}
 
 }

@@ -36,3 +36,4 @@ public class User
     public string Password { get; set; } // Store hashed passwords here
     public List<Home> Homes { get; set; } = new List<Home>();
 }
+

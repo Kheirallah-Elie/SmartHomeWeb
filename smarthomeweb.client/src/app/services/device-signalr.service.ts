@@ -31,12 +31,10 @@ interface Device {
   id: string;
   isOn: boolean;
 }
-
 interface Room {
   id: string;
   devices: Device[];
 }
-
 interface TelemetryData {
   deviceId: string;
   rooms: Room[];
@@ -87,7 +85,6 @@ export class SignalRService {
       .catch(err => console.error('Error starting SignalR connection:', err));
 
     // Register a listener for receiving telemetry messages
-    // Register a listener for receiving telemetry messages
     this.hubConnection.on('ReceiveTelemetry', (message: string) => {
       this.messageSubject.next(message); // Update the observable with the received message
       this.handleTelemetry(userId, message); // Call the function to handle the telemetry and update the device state
@@ -127,7 +124,7 @@ export class SignalRService {
           if (roomId && deviceId) {
             // Call the device service to update the device state in the database
             this.deviceService.updateDeviceState(userId, "SmartHome", roomId, deviceId, isOn);
-            this.updateSignalR(userId, "SmartHome", roomId, deviceId, isOn);
+            this.updateFromArduino(userId, "SmartHome", roomId, deviceId, isOn);
 
           } else {
             console.warn(`Invalid room or device ID. Skipping update for room: ${roomId}, device: ${deviceId}`);
@@ -173,16 +170,48 @@ export class SignalRService {
     this.hubConnection.on('ReceiveTelemetry', callback);
   }
 
-  updateSignalR(userId: string, homeId: string, roomId: string, deviceId: string, deviceState: boolean): void {
-    const payload = {
-      userId: userId,
-      homeId: homeId,
-      roomId: roomId,
-      deviceId: deviceId,
-      deviceState: deviceState
-    };
+  private async updateDeviceAndSignalR(
+    userId: string,
+    homeId: string,
+    roomId: string,
+    deviceId: string,
+    deviceState: boolean
+  ): Promise<void> {
+    try {
+      // Update the device state in the database
+      await this.deviceService.updateDeviceState(userId, homeId, roomId, deviceId, deviceState);
 
-    this.sendMessage(payload); // Call the existing sendMessage method
+      // Update SignalR
+      this.updateFromArduino(userId, homeId, roomId, deviceId, deviceState);
+    } catch (error) {
+      console.error(`Failed to update device (Room: ${roomId}, Device: ${deviceId}):`, error);
+    }
   }
 
+  updateFromArduino(userId: string, homeId: string, roomId: string, deviceId: string, deviceState: boolean): void {
+    const payload = this.createPayload(userId, homeId, roomId, deviceId, deviceState);
+    // Custom behavior specific to updateFromArduino can go here
+    console.log('Updating from Arduino with payload:', payload);
+  }
+
+  updateSignalR(userId: string, homeId: string, roomId: string, deviceId: string, deviceState: boolean): void {
+    const payload = this.createPayload(userId, homeId, roomId, deviceId, deviceState);
+    this.sendMessage(payload); // Leverage the shared payload logic and call sendMessage
+  }
+
+  private createPayload(
+    userId: string,
+    homeId: string,
+    roomId: string,
+    deviceId: string,
+    deviceState: boolean
+  ): { userId: string; homeId: string; roomId: string; deviceId: string; deviceState: boolean } {
+    return {
+      userId,
+      homeId,
+      roomId,
+      deviceId,
+      deviceState,
+    };
+  }
 }

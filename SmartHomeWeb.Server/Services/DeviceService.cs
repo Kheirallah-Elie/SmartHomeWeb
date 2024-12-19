@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Text;
 using System.Text.Json;
+using static DeviceController;
 
 public class DeviceService
 {
@@ -96,4 +97,5 @@ public class DeviceService
         room?.Devices.RemoveAll(d => d.DeviceId == deviceId);
         await _userService.UpdateUserAsync(userId, user);
     }
+
 }
